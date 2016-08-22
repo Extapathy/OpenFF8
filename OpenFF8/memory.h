@@ -26,10 +26,16 @@ struct FF8Vars {
 	DWORD* ptr1D2A230 = (DWORD*)0x1D2A230;
 	TaskList** unktasklist1D96A8C = (TaskList**)0x1D96A8C;
 	TaskList** unktasklist1D96A94 = (TaskList**)0x1D96A94;
+	DWORD* unkdword1D96A9C = (DWORD*)0x1D96A9C;
 	TaskList** unktasklist1D96AA0 = (TaskList**)0x1D96AA0;
 	TaskList** unktasklist1D96AA4 = (TaskList**)0x1D96AA4;
 	TaskList** unktasklist1D96AA8 = (TaskList**)0x1D96AA8;
 	TaskList** current_magic_task_list = (TaskList**)0x1D96AAC;
+	UnkStruct1D99A40** unkstruct1D99A40 = (UnkStruct1D99A40**)0x1D99A40;
+	MagicData** magic_data_ptr = (MagicData**)0x1D99A50;
+	WORD* unkword1D99A5C = (WORD*)0x1D99A5C; //could be dword
+	BYTE* unkbyte1D99A80 = (BYTE*)0x1D99A80;
+	BYTE* unkbyte1D99A85 = (BYTE*)0x1D99A85;
 };
 
 struct FF8Funcs {
@@ -48,10 +54,17 @@ struct FF8Funcs {
 	int(*DoMagicDamage)(int caster_id, int target_id, int attack_power, int magic_attack_type) = (int(*)(int, int, int, int))0x491AD0;
 	int(*DoDamage)(int attack_type, int caster_id, int target_id, int attack_power) = (int(*)(int, int, int, int))0x4922B0;
 	void(*Sub4AD170)(DWORD) = (void(*)(DWORD))0x4AD170;
+	void(*Sub505C00)(UnkStruct1D99A40& unk1, BYTE attack_type) = (void(*)(UnkStruct1D99A40&, BYTE))0x505C00;
+	BYTE(*CameraRelated)(MagicData& magic_data, WORD unk2) = (BYTE(*)(MagicData&, WORD))0x505F00;
+	void(*Sub506190)(MagicData& magic_data, BYTE unk1) = (void(*)(MagicData&, BYTE))0x506190;
 	void(*BS_Memset)(TaskList* task_list, LinkTask* data_start, int item_size, int item_count) = (void(*)(TaskList*, LinkTask*, int, int))0x508300;
-	LinkTask*(*BdLinkTask)(TaskList* task_list, int(*task)(LinkTask* task_data)) = (LinkTask*(*)(TaskList*, int(*)(LinkTask*)))0x508360;
-	LinkTask*(*GetFreeLinkTask)(TaskList* task_list) = (LinkTask*(*)(TaskList*))0x5083C0;
+	LinkTask*(*BdLinkTask)(TaskList& task_list, int(*task)(LinkTask& task_data)) = (LinkTask*(*)(TaskList&, int(*)(LinkTask&)))0x508360;
+	LinkTask*(*GetFreeLinkTask)(const TaskList& task_list) = (LinkTask*(*)(const TaskList&))0x5083C0;
 	int(*DoLinkTask)(TaskList* task_list) = (int(*)(TaskList*))0x508420;
+	int(*Sub508580)(int unk1, int unk2) = (int(*)(int, int))0x508580;
+	int(*PlayMagic)(LinkTask& task_data) = (int(*)(LinkTask&))0x50A9A0;
+	int(*Sub50ADE0)() = (int(*)())0x50ADE0;
+	void(*Sub50AFC0)() = (void(*)())0x50AFC0;
 	TaskList*(*Mag002_Fire_Init)(MagicIDInitData* init_data) = (TaskList*(*)(MagicIDInitData*))0x6298A0;
 	int(*Mag002_Fire_B)(LinkTask* task_data) = (int(*)(LinkTask*))0x629990;
 	int(*Mag002_Fire_C)(LinkTask* task_data) = (int(*)(LinkTask*))0x62A380;

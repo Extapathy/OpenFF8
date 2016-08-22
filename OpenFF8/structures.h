@@ -75,7 +75,7 @@ struct LinkTask {
 	WORD flags;
 	WORD unk;
 	LinkTask *next_item;
-	int(*function)(LinkTask*);
+	int(*function)(LinkTask&);
 	WORD unk1;
 };
 #pragma pack(pop)
@@ -101,4 +101,20 @@ struct MagicIDInitData {
 struct unkInitData {
 	MagicIDInitData* init_data;
 	BYTE unk;
+};
+
+struct UnkStruct1D99A40 {
+	BYTE padding[8];
+	DWORD unkdword08;
+};
+
+struct MagicData {
+	BYTE unkbyte00;
+	BYTE attack_type;
+	BYTE unkbyte02;
+	BYTE unkbyte03;
+	WORD unkword04;
+	WORD magic_id;
+	DWORD* unk08;
+	char* attack_name;
 };
