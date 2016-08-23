@@ -59,6 +59,27 @@ struct FF8Vars {
 struct FF8Funcs {
 	int(*InitializeSound_CAL)() = (int(*)())0x46B440;
 	void(*Sub47E3F0)(DWORD, DWORD, void(*)()) = (void(*)(DWORD, DWORD, void(*)()))0x47E3F0;
+	BYTE*(*get_duel_name)(int id) = (BYTE*(*)(int))0x47E530;
+	BYTE*(*get_duel_description)(int id) = (BYTE*(*)(int))0x47E560;
+	BYTE*(*get_shot_name)(int id) = (BYTE*(*)(int))0x47E590;
+	BYTE*(*get_shot_description)(int id) = (BYTE*(*)(int))0x47E5C0;
+	BYTE*(*get_renzokuken_finisher_name)(int id) = (BYTE*(*)(int))0x47E5F0;
+	BYTE*(*get_renzokuken_finisher_description)(int id) = (BYTE*(*)(int))0x47E620;
+	BYTE*(*get_blue_magic_name)(int id) = (BYTE*(*)(int))0x47E650;
+	BYTE*(*get_blue_magic_description)(int id) = (BYTE*(*)(int))0x47E680;
+	BYTE*(*get_temp_char_limit_name)(int id) = (BYTE*(*)(int))0x47E6B0;
+	BYTE*(*get_temp_char_limit_description)(int id) = (BYTE*(*)(int))0x47E6E0;
+	BYTE*(*get_GF_ability_name)(int id) = (BYTE*(*)(int))0x47E710;
+	BYTE*(*get_GF_ability_description)(int id) = (BYTE*(*)(int))0x47E840;
+	BYTE*(*get_magic_name)(int id) = (BYTE*(*)(int))0x47E970;
+	BYTE*(*get_magic_description)(int id) = (BYTE*(*)(int))0x47E9C0;
+	BYTE*(*get_item_name)(int id) = (BYTE*(*)(int))0x47EA30;
+	BYTE*(*get_item_description)(int id) = (BYTE*(*)(int))0x47EA90;
+	//character name functions here
+	BYTE*(*get_weapon_name)(int id) = (BYTE*(*)(int))0x47EBA0;
+	BYTE*(*get_command_name)(int id) = (BYTE*(*)(int))0x47EBD0;
+	BYTE*(*get_command_description)(int id) = (BYTE*(*)(int))0x47EC00;
+	BYTE*(*get_misc_text)(int id) = (BYTE*(*)(int))0x47EC70;
 	void(*Sub482C90)(void(*)()) = (void(*)(void(*)()))0x482C90; //Used in opcode 0x1C and 0x20
 	void(*SetMaxATB)(DWORD id) = (void(*)(DWORD))0x484490;
 	void(*SetStartATB)(DWORD id) = (void(*)(DWORD))0x4844D0;
