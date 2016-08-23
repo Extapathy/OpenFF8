@@ -104,9 +104,17 @@ struct unkInitData {
 };
 
 struct UnkStruct1D99A40 {
-	BYTE padding[8];
+	DWORD unkdword00;
+	BYTE unkbyte04;
+	BYTE padding[3];
 	DWORD unkdword08;
+	BYTE padding1[104];
+	BYTE* unkbyteptr74;
+	BYTE padding2[20];
+	DWORD unkdword8C;
 };
+
+static_assert(sizeof(UnkStruct1D99A40) == 144, "TaskList is wrong size.");
 
 struct MagicData {
 	BYTE unkbyte00;

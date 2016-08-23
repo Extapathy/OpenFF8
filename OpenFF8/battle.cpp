@@ -66,11 +66,13 @@ int DoLinkTask(TaskList& task_list) {
 }
 
 int PlayMagic(LinkTask& task_data) {
+	MagicData& magic_data = **ff8vars.magic_data_ptr;
 	BYTE* task = (BYTE*)&task_data;
-	switch (*(task + 0x0D)) {
+	BYTE& state = *(task + 0x0D);
+	switch (state) {
 		case 0:
-			*ff8vars.unkbyte1D99A85 = ff8funcs.CameraRelated(**ff8vars.magic_data_ptr, *ff8vars.unkword1D99A5C);
-			(*(task + 0x0D))++;
+			*ff8vars.unkbyte1D99A85 = ff8funcs.CameraRelated(magic_data, *ff8vars.unkword1D99A5C);
+			state++;
 		case 1:
 			if (*ff8vars.unkbyte1D99A85 != 0) {
 				if (ff8funcs.Sub508580(0x1A, 0x40) != 0) return 0;
@@ -78,26 +80,61 @@ int PlayMagic(LinkTask& task_data) {
 			else {
 				if (ff8funcs.Sub50ADE0() != 0) return 0;
 			}
-			(*(task + 0x0D))++;
+			state++;
 		case 2:
 			*ff8vars.unkdword1D96A9C |= 0x10;
 			ff8funcs.Sub50AFC0();
-			if (((*ff8vars.magic_data_ptr)->attack_type == 0x0B && (*ff8vars.magic_data_ptr)->unkword04 == 0xFFFB) || (*ff8vars.magic_data_ptr)->attack_type == 0x0E) {
+			if ((magic_data.attack_type == 0x0B && magic_data.unkword04 == 0xFFFB) || magic_data.attack_type == 0x0E) {
 				*ff8vars.unkbyte1D99A80 = 0;
 			}
 			(*ff8vars.unkstruct1D99A40)->unkdword08 &= 0xFF7FFFFF;
-			ff8funcs.Sub505C00(**ff8vars.unkstruct1D99A40, (*ff8vars.magic_data_ptr)->attack_type);
-			ff8funcs.Sub506190(**ff8vars.magic_data_ptr, *ff8vars.unkbyte1D99A85);
-
-			//TODO finish cases off
+			ff8funcs.Sub505C00(**ff8vars.unkstruct1D99A40, magic_data.attack_type);
+			ff8funcs.Sub506190(magic_data, *ff8vars.unkbyte1D99A85);
+			ff8funcs.LoadMagicID(magic_data.magic_id, ff8vars.current_magic_init_function);
+			state++;
 			return 0;
 		case 3:
-			break;
+			if (*ff8vars.unkbyte1D96A90 > 0 && *ff8vars.unkdword1D96A9C & 0x20000000 == 0) return 0;
+			if (*ff8vars.unkdword1D999C8 <= 0) return 0;
+			if (*ff8vars.unkbyte1D97718 != 0) return 0;
+			if ((*ff8vars.unkstruct1D99A40)->unkdword8C == 0) {
+				*((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) |= 0x10;
+				state++;
+				return 0;
+			}
+			BYTE* link_task = (BYTE*)ff8funcs.Sub506C10(ff8funcs.Sub50B080);
+			*(WORD*)(link_task + 0x10) = 0x10;
+			*(DWORD*)(link_task + 0x0C) = (*ff8vars.unkstruct1D99A40)->unkdword00;
+			state++;
+			return 0;
 		case 4:
-			break;
+			if (*ff8vars.unkbyte1D96A90 > 0 && *ff8vars.unkdword1D96A9C & 0x20000000 == 0) return 0;
+			if (*((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) & 0x20 != 0) {
+				state++;
+				if (*ff8vars.unkword1D99A90 != 0) {
+					//WORD temp = *(WORD*)(ff8vars.unkbyte1D99A84)
+				}
+			}
+			//TODO finish case 4
 		case 5:
-			break;
+			*(WORD*)((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) &= 0xFFDF;
+			if (*ff8vars.unkdword1D96A9C & 0x20000000 != 0) {
+				//TODO missing line
+				*ff8vars.unkdword1D96A9C &= 0xDFFFFFFF;
+
+			}
+			if ((magic_data.attack_type == 0x02 || magic_data.attack_type == 0x06) && (*ff8vars.unkstruct1D99A40)->unkbyte04 >= 0x10) {
+				*ff8vars.unkdword1D96A9C |= 0x20;
+			}
+			*ff8vars.current_magic_task_list = (*ff8vars.current_magic_init_function)(*ff8vars.current_magic_init_data);
+			if (magic_data.attack_type == 0xFE) {
+				ff8funcs.Sub56DCE0(*ff8vars.unkbyte1D28DF7, magic_data.unkword04);
+			}
+			*ff8vars.unkword1D99A8E = 0;
+			state++;
+			return 0;
 		case 6:
+			//TODO finish rest
 			break;
 		case 7:
 			break;
