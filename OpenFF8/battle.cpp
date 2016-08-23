@@ -93,7 +93,7 @@ int PlayMagic(LinkTask& task_data) {
 			ff8funcs.LoadMagicID(magic_data.magic_id, ff8vars.current_magic_init_function);
 			state++;
 			return 0;
-		case 3:
+		case 3: //Cast animation
 			if (*ff8vars.unkbyte1D96A90 > 0 && *ff8vars.unkdword1D96A9C & 0x20000000 == 0) return 0;
 			if (*ff8vars.unkdword1D999C8 <= 0) return 0;
 			if (*ff8vars.unkbyte1D97718 != 0) return 0;
@@ -116,7 +116,7 @@ int PlayMagic(LinkTask& task_data) {
 				}
 			}
 			//TODO finish case 4
-		case 5:
+		case 5: //Load magic ID
 			*(WORD*)((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) &= 0xFFDF;
 			if (*ff8vars.unkdword1D96A9C & 0x20000000 != 0) {
 				//TODO missing line
