@@ -3,6 +3,71 @@
 #include "memory.h"
 #include <algorithm>
 
+int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) {
+	*ff8vars.unkbyte1D28E00 = 0;
+	DWORD local1 = 0xFF;
+	DWORD local2 = 1;
+	MagicData& local3 = ff8vars.attack_queue_data[*ff8vars.attack_queue_count];
+	if (caster_id < 3) {
+		unk3 = 0;
+		if (kernel_id == 0x04 || kernel_id == 0x0D) {
+			if (ff8vars.kernel->battle_items[id].attack_type == 0x0E) {
+				kernel_id = 0xF4;
+				unk1 = id;
+				if (id == 0x1E) {
+					WORD ebx;
+					BYTE eax;
+					*ff8vars.unkbyte1D28E21 = 1;
+					if (*ff8vars.chocobo_attacks & 0x01 != 0) {
+						if (*ff8vars.chocobo_attacks & 0x02 == 0) {
+							ebx = *ff8vars.unkbyte1CFEFE5 + 2;
+							eax = 2;
+						}
+						eax = 1;
+					}
+					else {
+						eax = 0;
+					}
+
+				}
+			}
+		}
+	}
+	//TODO untangle twisted logic above
+
+	switch (kernel_id) {
+		case 0x1D:
+		case 0x06:
+		case 0xF6:
+		case 0xF7:
+		case 0x02:
+		case 0x03:
+		case 0xFE:
+		case 0xF4:
+		case 0xF0: case 0xF5:
+		case 0x04: case 0x0D:
+		case 0xFA:
+		case 0x10:
+		case 0x0E:
+		case 0xED:
+		case 0xEE:
+		case 0x13:
+		case 0x11: case 0x12: case 0x14: case 0x15: case 0x16:
+		case 0x0F:
+		case 0x05:
+		case 0x0B:
+		case 0xF1:
+		case 0xEF:
+		case 0x08: case 0xEC:
+		case 0x26:
+		case 0x07:
+		case 0x17: case 0x18: case 0x19: case 0x1A: case 0x1B: case 0x1E: case 0x1F: case 0x20: case 0x21: case 0x22:
+		case 0xFC:
+		case 0x1C:
+		case 0xFFFC:
+	}
+}
+
 LinkTask* BdLinkTask(TaskList& task_list, int(*task)(LinkTask& task_data)) {
 	LinkTask *new_item = GetFreeLinkTask(task_list);
 
@@ -116,7 +181,7 @@ int PlayMagic(LinkTask& task_data) {
 				}
 			}
 			//TODO finish case 4
-		case 5: //Load magic ID
+		case 5: //Init magic
 			*(WORD*)((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) &= 0xFFDF;
 			if (*ff8vars.unkdword1D96A9C & 0x20000000 != 0) {
 				//TODO missing line
@@ -133,7 +198,30 @@ int PlayMagic(LinkTask& task_data) {
 			*ff8vars.unkword1D99A8E = 0;
 			state++;
 			return 0;
-		case 6:
+		case 6: //Magic animation
+			if (magic_data.unkword04 == 0xFFFE) {
+				if (*ff8vars.current_magic_task_list == NULL) {
+					state++;
+				}
+				return 0;
+			}
+			if (magic_data.attack_type != 0x0B && magic_data.attack_type != 0x0E) {
+				if (ff8funcs.Sub50AE80() != 0) {
+					if (*ff8vars.current_magic_task_list == NULL) return 0;
+					if (++(*ff8vars.unkword1D99A8E) < 0x384) return 0;
+					ff8funcs.InitializeSound_CAL();
+					return 0;
+				}
+				ff8funcs.Sub50AED0();
+				if (*ff8vars.unkbyte1D99A79 & 0x02 == 0) {
+					*ff8vars.unkdword1D96A9C &= 0xEF;
+				}
+				if (*ff8vars.unkword1D99A90 == 0) {
+					state++;
+					return 0;
+				}
+
+			}
 			//TODO finish rest
 			break;
 		case 7:

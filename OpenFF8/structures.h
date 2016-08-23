@@ -92,6 +92,7 @@ struct TaskList {
 
 static_assert(sizeof(TaskList) == 16, "TaskList is wrong size.");
 
+#pragma pack(push, 1)
 struct MagicIDInitData {
 	WORD unk;
 	WORD unk1;
@@ -114,7 +115,7 @@ struct UnkStruct1D99A40 {
 	DWORD unkdword8C;
 };
 
-static_assert(sizeof(UnkStruct1D99A40) == 144, "TaskList is wrong size.");
+static_assert(sizeof(UnkStruct1D99A40) == 144, "UnkStruct1D99A40 is wrong size.");
 
 struct MagicData {
 	BYTE unkbyte00;
@@ -125,4 +126,108 @@ struct MagicData {
 	WORD magic_id;
 	DWORD* unk08;
 	char* attack_name;
+	BYTE padding[4];
 };
+
+static_assert(sizeof(MagicData) == 20, "MagicData is wrong size.");
+
+struct KernelBattleCommand {
+	BYTE padding[8];
+};
+
+struct KernelMagicData {
+	WORD name_offset;
+	WORD description_offset;
+	WORD magic_id;
+	BYTE unkbyte06;
+	BYTE attack_type;
+	BYTE attack_power;
+	BYTE unkbyte09;
+	BYTE target_info;
+	BYTE attack_flags;
+	BYTE draw_resist;
+	BYTE hit_count;
+	BYTE element;
+	BYTE unkbyte0F;
+	DWORD status_dword;
+	WORD status_word;
+	BYTE status_attack;
+	BYTE HP_junction_value;
+	BYTE str_junction_value;
+	BYTE vit_junction_value;
+	BYTE mag_junction_value;
+	BYTE spr_junction_value;
+	BYTE spd_junction_value;
+	BYTE eva_junction_value;
+	BYTE hit_junction_value;
+	BYTE luck_junction_value;
+	BYTE J_elemental_attack_element;
+	BYTE J_elemental_attack_value;
+	BYTE J_elemental_defence_element;
+	BYTE J_elemental_defence_value;
+	BYTE J_status_attack_value;
+	BYTE J_status_defence_value;
+	WORD J_status_attack_status;
+	WORD J_status_defence_status;
+	BYTE GF_compatibility[16];
+	WORD unkword3A;
+};
+
+static_assert(sizeof(KernelMagicData) == 60, "KernelMagicData is wrong size.");
+
+struct KernelGFData {
+	BYTE padding[132];
+};
+
+struct KernelEnemyAttack {
+	BYTE padding[20];
+};
+
+struct KernelWeapon {
+	BYTE padding[12];
+};
+
+struct KernelRenzokukenFinisher {
+	BYTE padding[24];
+};
+
+struct KernelCharacter {
+	BYTE padding[36];
+};
+
+struct KernelBattleItem {
+	WORD name_offset;
+	WORD description_offset;
+	WORD magic_id;
+	BYTE attack_type;
+	BYTE attack_power;
+	BYTE unkbyte08;
+	BYTE target_info;
+	BYTE unkbyte0A;
+	BYTE attack_flags;
+	BYTE unkbyte0C;
+	BYTE status_attack;
+	WORD status_word;
+	DWORD status_dword;
+	BYTE attack_param;
+	BYTE unkbyte15;
+	BYTE hit_count;
+	BYTE element;
+};
+
+static_assert(sizeof(KernelBattleItem) == 24, "KernelBattleItem is wrong size.");
+
+//TODO finish kernel
+struct Kernel {
+	DWORD section_count;
+	WORD offsets[56];
+	KernelBattleCommand battle_commands[39];
+	KernelMagicData magic[57];
+	KernelGFData GFs[16];
+	KernelEnemyAttack enemy_attacks[384];
+	KernelWeapon weapons[33];
+	KernelRenzokukenFinisher renzokuken_finishers[4];
+	KernelCharacter characters[11];
+	KernelBattleItem battle_items[33];
+};
+#pragma pack(pop)
