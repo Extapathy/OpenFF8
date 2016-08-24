@@ -18,9 +18,11 @@ int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk
 					WORD ebx;
 					BYTE eax;
 					*ff8vars.unkbyte1D28E21 = 1;
-					if (*ff8vars.chocobo_attacks & 0x01 != 0) {
-						if (*ff8vars.chocobo_attacks & 0x02 == 0) {
-							ebx = *ff8vars.unkbyte1CFEFE5 + 2;
+					//Check that Boko is enabled
+					if (*ff8vars.chocobo_world_flags & 0x01 != 0) {
+						//Check that Boko isn't in the world
+						if (*ff8vars.chocobo_world_flags & 0x02 == 0) {
+							ebx = *ff8vars.boko_attack + 2;
 							eax = 2;
 						}
 						eax = 1;

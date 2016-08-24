@@ -6,11 +6,13 @@
 #pragma pack(push, 1)
 struct FF8Vars {
 	Kernel* kernel = (Kernel*)0x1CF3E48;
-	//0x1CFDC48
-	DWORD* timer = (DWORD*)0x1CFE92C; //in save game
+	//0x1CFDC58 - save game start
+	DWORD* timer = (DWORD*)0x1CFE92C;
 	BYTE* ptr1CFE97A = (BYTE*)0x1CFE97A; //odin byte
-	BYTE* chocobo_attacks = (BYTE*)0x1CFEFB8;
-	BYTE* unkbyte1CFEFE5 = (BYTE*)0x1CFEFE5;
+	BYTE* chocobo_world_flags = (BYTE*)0x1CFEFB8;
+	BYTE* boko_attack = (BYTE*)0x1CFEFE5;
+	//end of save data
+	//1CFF000 - character data start
 	WORD* ptr1CFF6E2 = (WORD*)0x1CFF6E2;
 	BYTE* ptr1D27ADC = (BYTE*)0x1D27ADC;
 	Character* character_info = (Character*)0x1D27B10; //208 byte structure
@@ -60,6 +62,7 @@ struct FF8Vars {
 struct FF8Funcs {
 	int(*InitializeSound_CAL)() = (int(*)())0x46B440;
 	void(*Sub47E3F0)(DWORD, DWORD, void(*)()) = (void(*)(DWORD, DWORD, void(*)()))0x47E3F0;
+	void(*SetGFExists)(int GF_id) = (void(*)(int))0x47E480;
 	BYTE*(*GetDuelName)(int id) = (BYTE*(*)(int))0x47E530;
 	BYTE*(*GetDuelDescription)(int id) = (BYTE*(*)(int))0x47E560;
 	BYTE*(*GetShotName)(int id) = (BYTE*(*)(int))0x47E590;
@@ -81,7 +84,8 @@ struct FF8Funcs {
 	BYTE*(*GetCommandName)(int id) = (BYTE*(*)(int))0x47EBD0;
 	BYTE*(*GetCommandDescription)(int id) = (BYTE*(*)(int))0x47EC00;
 	BYTE*(*GetMiscText)(int id) = (BYTE*(*)(int))0x47EC70;
-	bool(*IsMagicJunctioned)(int char_id, int magic_id) = (bool(*)(int, int))0x47EEB0;
+	BYTE(*CanStoreMagic)(int char_id, int magic_id) = (BYTE(*)(int, int))0x47ED90;
+	bool(*IsMagicJunctioned)(int party_member_id, int magic_id) = (bool(*)(int, int))0x47EEB0;
 	void(*Sub482C90)(void(*)()) = (void(*)(void(*)()))0x482C90; //Used in opcode 0x1C and 0x20
 	void(*DeadTimeReset)() = (void(*)())0x482F70;
 	void(*DeadTimeTick)() = (void(*)())0x482F80;
@@ -92,9 +96,9 @@ struct FF8Funcs {
 	bool(*HasBattleItem)(int id) = (bool(*)(int))0x487D80;
 	bool(*UseBattleItem)(int unk1, int id) = (bool(*)(int, int))0x487DB0;
 	void(*Sub48ACD0)() = (void(*)())0x48ACD0;
-	void(*ParseMonsterStats)(DWORD id, DWORD unk1, DWORD unk2) = (void(*)(DWORD, DWORD, DWORD))0x48BBD0;
-	void(*GetStats)(DWORD id) = (void(*)(DWORD))0x48C1C0;
-	int(*GetStat)(int level, BYTE *datfile, int stat) = (int(*)(int, BYTE*, int))0x48C3F0;
+	void(*InitMonster)(DWORD id, DWORD unk1, DWORD unk2) = (void(*)(DWORD, DWORD, DWORD))0x48BBD0;
+	void(*GetMonsterStats)(DWORD id) = (void(*)(DWORD))0x48C1C0;
+	int(*GetMonsterStat)(int level, BYTE *datfile, int stat) = (int(*)(int, BYTE*, int))0x48C3F0;
 	int(*LoadAttack)(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) = (int(*)(DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD))0x48D200;
 	//void(*sub48C5C0)(DWORD) = (void(*))0x48C5C0;
 	BYTE(*Rand)() = (BYTE(*)())0x48F020;
@@ -102,6 +106,8 @@ struct FF8Funcs {
 	int(*DoMagicDamage)(int caster_id, int target_id, int attack_power, int magic_attack_type) = (int(*)(int, int, int, int))0x491AD0;
 	BYTE(*InflictStatuses)(int caster_id, int target_id, int damage_type) = (BYTE(*)(int, int, int))0x492090;
 	int(*DoDamage)(int attack_type, int caster_id, int target_id, int attack_power) = (int(*)(int, int, int, int))0x4922B0;
+	BYTE*(*GetNonJGFAttackName)(int id) = (BYTE*(*)(int))0x495050;
+	BYTE*(*GetGFAttackName)(int id) = (BYTE*(*)(int))0x495070;
 	BYTE*(*GetEnemyAttackName)(int id) = (BYTE*(*)(int))0x4950A0;
 	int(*GetCharacterHP)(int lvl, int char_id) = (int(*)(int, int))0x496310;
 	int(*GetCharacterStat)(int lvl, int char_id, int stat) = (int(*)(int, int, int))0x496440;
