@@ -43,6 +43,15 @@ int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk
 		case 0xF6:
 		case 0xF7:
 		case 0x02:
+			ff8funcs.GetMagicName(id);
+			if (caster_id < 3) {
+				/*for (int i = 0; ) {
+					if (ff8vars.char_data.magic->magic_id == id) break;
+				}*/
+			}
+
+
+
 		case 0x03:
 		case 0xFE:
 		case 0xF4:

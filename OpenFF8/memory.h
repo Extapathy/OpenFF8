@@ -12,9 +12,12 @@ struct FF8Vars {
 	BYTE* chocobo_world_flags = (BYTE*)0x1CFEFB8;
 	BYTE* boko_attack = (BYTE*)0x1CFEFE5;
 	//end of save data
-	//1CFF000 - character data start
-	WORD* ptr1CFF6E2 = (WORD*)0x1CFF6E2;
-	BYTE* ptr1D27ADC = (BYTE*)0x1D27ADC;
+	//0x1CFF000 - character data start
+	CharacterData char_data;
+	//0x1CFF570 - character data end
+	WORD* encounter_id = (WORD*)0x1CFF6E0;
+	WORD* battle_flags = (WORD*)0x1CFF6E2;
+	//BYTE* current_attack_flagsA = (BYTE*)0x1D27ADC;
 	Character* character_info = (Character*)0x1D27B10; //208 byte structure
 	BYTE* attack_queue_count = (BYTE*)0x1D280C0;
 	MagicData* attack_queue_data = (MagicData*)0x1D280C4;
@@ -30,11 +33,22 @@ struct FF8Vars {
 	BYTE* unkbyte1D28E00 = (BYTE*)0x1D28E00;
 	BYTE* ptr1D28E06 = (BYTE*)0x1D28E06;
 	bool* init_done = (bool*)0x1D28E09;
-	BYTE* unkbyte1D28E21 = (BYTE*)unkbyte1D28E21;
+	//BYTE* current_attack_flags = (BYTE*)0x1D28E0E;
+	BYTE* unkbyte1D28E21 = (BYTE*)0x1D28E21;
 	BYTE* ptr1D28E2D = (BYTE*)0x1D28E2D;
 	unk1D28E83* monster_info = (unk1D28E83*)0x1D28E83; //71 byte structure
 	BYTE* ptr1D2A228 = (BYTE*)0x1D2A228;
 	DWORD* ptr1D2A230 = (DWORD*)0x1D2A230;
+	DWORD* current_attack_status_dword = (DWORD*)0x1D2A234;
+	BYTE* current_attack_hit = (BYTE*)0x1D2A238;
+	BYTE* current_status_attack = (BYTE*)0x1D2A239;
+	WORD* current_attack_status_word = (WORD*)0x1D2A23E;
+	BYTE* current_attack_element = (BYTE*)0x1D2A244;
+	BYTE* countdown_enabled = (BYTE*)0x1D2B813;
+	BYTE** current_character_commands = (BYTE**)0x1D76834;
+	BYTE** current_character_limit_break = (BYTE**)0x1D76838;
+	BYTE* current_active_character_id = (BYTE*)0x1D76844;
+	BYTE* new_active_character_id = (BYTE*)0x1D76845;
 	TaskList** unktasklist1D96A8C = (TaskList**)0x1D96A8C; //animation sequence
 	BYTE* unkbyte1D96A90 = (BYTE*)0x1D96A90;
 	TaskList** unktasklist1D96A94 = (TaskList**)0x1D96A94;
@@ -56,6 +70,15 @@ struct FF8Vars {
 	WORD* unkword1D99A8E = (WORD*)0x1D99A8E;
 	WORD* unkword1D99A90 = (WORD*)0x1D99A90;
 	BYTE* unkbyte1D99AAA = (BYTE*)0x1D99AAA;
+	BYTE* current_entity = (BYTE*)0x1D9CDF1;
+	FieldEntity** entity_other = (FieldEntity**)0x1D9CF88;
+	FieldEntity** entity_background = (FieldEntity**)0x1D9CF8C;
+	FieldEntity** entity_door = (FieldEntity**)0x1D9CF90;
+	BYTE* entity_count_other = (BYTE*)0x1D9D019;
+	BYTE* entity_count_line = (BYTE*)0x1D9D0E0;
+	BYTE* entity_count_door = (BYTE*)0x1D9D0E1;
+	BYTE* entity_count_background = (BYTE*)0x1D9D0E8;
+	FieldEntity** entity_line = (FieldEntity**)0x1D9D0F0;
 	TaskList*(**current_magic_init_function)(MagicIDInitData& init_data) = (TaskList*(**)(MagicIDInitData&))0x21DFEC4;
 };
 
@@ -96,16 +119,19 @@ struct FF8Funcs {
 	bool(*HasBattleItem)(int id) = (bool(*)(int))0x487D80;
 	bool(*UseBattleItem)(int unk1, int id) = (bool(*)(int, int))0x487DB0;
 	void(*Sub48ACD0)() = (void(*)())0x48ACD0;
+	void(*SetKnownMagic)(int magic_id) = (void(*)(int))0x48B7A0;
 	void(*InitMonster)(DWORD id, DWORD unk1, DWORD unk2) = (void(*)(DWORD, DWORD, DWORD))0x48BBD0;
 	void(*GetMonsterStats)(DWORD id) = (void(*)(DWORD))0x48C1C0;
 	int(*GetMonsterStat)(int level, BYTE *datfile, int stat) = (int(*)(int, BYTE*, int))0x48C3F0;
+	int(*GetItemAmount)(int item_id) = (int(*)(int))0x48CCB0;
 	int(*LoadAttack)(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) = (int(*)(DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD))0x48D200;
-	//void(*sub48C5C0)(DWORD) = (void(*))0x48C5C0;
 	BYTE(*Rand)() = (BYTE(*)())0x48F020;
+	BYTE(*Rand1toX)(BYTE max) = (BYTE(*)(BYTE))0x48F120;
 	int(*CureStatus)(int target_id, int spell_power, int status_word, int status_dword) = (int(*)(int, int, int, int))0x491820;
 	int(*DoMagicDamage)(int caster_id, int target_id, int attack_power, int magic_attack_type) = (int(*)(int, int, int, int))0x491AD0;
 	BYTE(*InflictStatuses)(int caster_id, int target_id, int damage_type) = (BYTE(*)(int, int, int))0x492090;
 	int(*DoDamage)(int attack_type, int caster_id, int target_id, int attack_power) = (int(*)(int, int, int, int))0x4922B0;
+	void(*UpdateCrisisLevel)(int char_id) = (void(*)(int))0x4941F0;
 	BYTE*(*GetNonJGFAttackName)(int id) = (BYTE*(*)(int))0x495050;
 	BYTE*(*GetGFAttackName)(int id) = (BYTE*(*)(int))0x495070;
 	BYTE*(*GetEnemyAttackName)(int id) = (BYTE*(*)(int))0x4950A0;
