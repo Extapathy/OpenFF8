@@ -254,7 +254,7 @@ DWORD Archive_GetFile(BYTE* filename) {
 	VirtualProtect(ff8funcs.Archive_GetFile, 6,                       // assign read write protection
 		PAGE_EXECUTE_READWRITE, &oldProtect);
 	memcpy(new_bytes, ff8funcs.Archive_GetFile, 6);
-	memcpy(original_bytes, ff8funcs.Archive_GetFile, 6);
+	memcpy(ff8funcs.Archive_GetFile, original_bytes, 6);
 
 	DWORD return_value = ff8funcs.Archive_GetFile(filename);
 
