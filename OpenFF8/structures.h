@@ -4,7 +4,7 @@
 
 //loaded from 0x48BBD0
 //0x1D27B10
-#pragma pack(push, 1)
+#pragma pack(1)
 struct Character {
 	BYTE **infoSection; //0x1D27B10 - points to section 7 of a loaded dat file - NULL for SeeDs
 	BYTE **aiSection; //0x1D27B14 -  NULL for SeeDs
@@ -49,13 +49,10 @@ struct Character {
 	WORD unkword1D27BDC; //0x1D27BDC
 	BYTE unk8[2]; //0x1D27BDE
 };
-#pragma pack(pop)
-
 
 static_assert(sizeof(Character) == 208, "Character structure is wrong size.");
 
 //0x1D28E83
-#pragma pack(push, 1)
 struct unk1D28E83 {
 	BYTE strMul; //0x1D28E83
 	BYTE vitMul; //0x1D28E84
@@ -66,11 +63,9 @@ struct unk1D28E83 {
 	BYTE difficulty; //0x1D28E89
 	BYTE unk[64]; //1D28E8A
 };
-#pragma pack(pop)
 
 static_assert(sizeof(unk1D28E83) == 71, "Structure is wrong size.");
 
-#pragma pack(push, 1)
 //This is only the common header, the tasks have varying sizes.
 struct LinkTask {
 	WORD flags;
@@ -79,9 +74,7 @@ struct LinkTask {
 	int(*function)(LinkTask&);
 	WORD unk1;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct TaskList {
 	LinkTask *first_item;
 	LinkTask *last_item;
@@ -89,11 +82,9 @@ struct TaskList {
 	WORD item_size;
 	WORD max_items;
 };
-#pragma pack(pop)
 
 static_assert(sizeof(TaskList) == 16, "TaskList is wrong size.");
 
-#pragma pack(push, 1)
 struct MagicIDInitData {
 	WORD unk;
 	WORD unk1;
@@ -277,5 +268,3 @@ struct FieldEntity {
 	BYTE ladder_anim_first; //+253
 	BYTE ladder_anim_last; //+254
 };
-
-#pragma pack(pop)
