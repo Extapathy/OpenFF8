@@ -27,7 +27,7 @@ struct Character {
 	WORD unkword1D27B94; //0x1D27B94 ????? 0x2E, 0x29, 0x06, 
 	WORD unkword1D27B96; //0x1D27B96 ?????
 	BYTE lastAttacker; //0x1D27B98 - used in opcode 0x0E case 0xCB
-	BYTE unkbyte1D27BC8; //0x1D27B99 - set to parts of current attack flags
+	BYTE unkbyte1D27B99; //0x1D27B99 - set to parts of current attack flags
 	BYTE unk5_0[6]; //0x1D27B9A
 	BYTE mentalRes[40]; //0x1D27BA0 - Mental resistances - 0. Death, 1. Poison, 2. Petrify, 3. Darkness, 4. Silence, 5. Berserk, 6. Zombie, 8. Sleep, 9. Haste, A. Slow, B. Stop, C. Regen, F. Reflect, 12. Doom, 14. Petrifying, 15. Float, 16. Confuse, 17. Drain, 18. Expulsion, rest are always 100 for monsters
 	BYTE unkbyte1D27BC8; //0x1D27BC8 used in case 0x2A  - edited by function 0x48C5C0
@@ -262,8 +262,8 @@ struct FieldEntity {
 	WORD push_radius; //+0x1F6
 	WORD talk_radius; //+0x1F8
 	WORD triangle_id; //+0x1FA
-	WORD move_speed; //+0x1FE
-	WORD move_speed; //+0x200
+	//WORD move_speed; //+0x1FE
+	//WORD move_speed; //+0x200
 	WORD anime_speed; //+0x208
 	WORD model; //+0x218
 	BYTE angle; //+0x241

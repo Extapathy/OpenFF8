@@ -3,7 +3,7 @@
 #include "memory.h"
 #include <algorithm>
 
-int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) {
+/*int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) {
 	*ff8vars.unkbyte1D28E00 = 0;
 	DWORD local1 = 0xFF;
 	DWORD local2 = 1;
@@ -19,9 +19,9 @@ int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk
 					BYTE eax;
 					*ff8vars.unkbyte1D28E21 = 1;
 					//Check that Boko is enabled
-					if (*ff8vars.chocobo_world_flags & 0x01 != 0) {
+					if ((*ff8vars.chocobo_world_flags & 0x01) != 0) {
 						//Check that Boko isn't in the world
-						if (*ff8vars.chocobo_world_flags & 0x02 == 0) {
+						if ((*ff8vars.chocobo_world_flags & 0x02) == 0) {
 							ebx = *ff8vars.boko_attack + 2;
 							eax = 2;
 						}
@@ -45,9 +45,9 @@ int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk
 		case 0x02:
 			ff8funcs.GetMagicName(id);
 			if (caster_id < 3) {
-				/*for (int i = 0; ) {
+				for (int i = 0; ) {
 					if (ff8vars.char_data.magic->magic_id == id) break;
-				}*/
+				}
 			}
 
 
@@ -77,7 +77,7 @@ int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk
 		case 0x1C:
 		case 0xFFFC:
 	}
-}
+}*/
 
 LinkTask* BdLinkTask(TaskList& task_list, int(*task)(LinkTask& task_data)) {
 	LinkTask *new_item = GetFreeLinkTask(task_list);
@@ -145,6 +145,7 @@ int PlayMagic(LinkTask& task_data) {
 	MagicData& magic_data = **ff8vars.magic_data_ptr;
 	BYTE* task = (BYTE*)&task_data;
 	BYTE& state = *(task + 0x0D);
+	BYTE* link_task = NULL;
 	switch (state) {
 		case 0:
 			*ff8vars.unkbyte1D99A85 = ff8funcs.CameraRelated(magic_data, *ff8vars.unkword1D99A5C);
@@ -170,7 +171,7 @@ int PlayMagic(LinkTask& task_data) {
 			state++;
 			return 0;
 		case 3: //Cast animation
-			if (*ff8vars.unkbyte1D96A90 > 0 && *ff8vars.unkdword1D96A9C & 0x20000000 == 0) return 0;
+			if (*ff8vars.unkbyte1D96A90 > 0 && (*ff8vars.unkdword1D96A9C & 0x20000000) == 0) return 0;
 			if (*ff8vars.unkdword1D999C8 <= 0) return 0;
 			if (*ff8vars.unkbyte1D97718 != 0) return 0;
 			if ((*ff8vars.unkstruct1D99A40)->unkdword8C == 0) {
@@ -178,14 +179,14 @@ int PlayMagic(LinkTask& task_data) {
 				state++;
 				return 0;
 			}
-			BYTE* link_task = (BYTE*)ff8funcs.Sub506C10(ff8funcs.Sub50B080);
+			link_task = (BYTE*)ff8funcs.Sub506C10(ff8funcs.Sub50B080);
 			*(WORD*)(link_task + 0x10) = 0x10;
 			*(DWORD*)(link_task + 0x0C) = (*ff8vars.unkstruct1D99A40)->unkdword00;
 			state++;
 			return 0;
 		case 4:
-			if (*ff8vars.unkbyte1D96A90 > 0 && *ff8vars.unkdword1D96A9C & 0x20000000 == 0) return 0;
-			if (*((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) & 0x20 != 0) {
+			if (*ff8vars.unkbyte1D96A90 > 0 && (*ff8vars.unkdword1D96A9C & 0x20000000) == 0) return 0;
+			if ((*((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) & 0x20) != 0) {
 				state++;
 				if (*ff8vars.unkword1D99A90 != 0) {
 					//WORD temp = *(WORD*)(ff8vars.unkbyte1D99A84)
@@ -194,7 +195,7 @@ int PlayMagic(LinkTask& task_data) {
 			//TODO finish case 4
 		case 5: //Init magic
 			*(WORD*)((*ff8vars.unkstruct1D99A40)->unkbyteptr74 + 0x2C) &= 0xFFDF;
-			if (*ff8vars.unkdword1D96A9C & 0x20000000 != 0) {
+			if ((*ff8vars.unkdword1D96A9C & 0x20000000) != 0) {
 				//TODO missing line
 				*ff8vars.unkdword1D96A9C &= 0xDFFFFFFF;
 
@@ -224,7 +225,7 @@ int PlayMagic(LinkTask& task_data) {
 					return 0;
 				}
 				ff8funcs.Sub50AED0();
-				if (*ff8vars.unkbyte1D99A79 & 0x02 == 0) {
+				if ((*ff8vars.unkbyte1D99A79 & 0x02) == 0) {
 					*ff8vars.unkdword1D96A9C &= 0xEF;
 				}
 				if (*ff8vars.unkword1D99A90 == 0) {

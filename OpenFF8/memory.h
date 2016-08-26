@@ -26,6 +26,7 @@ struct FF8Vars {
 	BYTE* ptr1D28854 = (BYTE*)0x1D28854; //used in func 0x48BA10, array of 8?
 	BYTE* ptr1D2885C = (BYTE*)0x1D2885C; //used in func 0x48BA10, array of 8?
 	DWORD* battle_vars = (DWORD*)0x1D28D98; //- 60 to 67 - base address used is 0x1D28C18 - array of size 8
+	BYTE** current_battle_message = (BYTE**)0x1D28DDC;
 	WORD* dead_timer = (WORD*)0x1D28DE4;
 	BYTE* unkbyte1D28DF7 = (BYTE*)0x1D28DF7;
 	BYTE* ptr1D28DFA = (BYTE*)0x1D28DFA;
@@ -40,9 +41,10 @@ struct FF8Vars {
 	BYTE* ptr1D2A228 = (BYTE*)0x1D2A228;
 	DWORD* ptr1D2A230 = (DWORD*)0x1D2A230;
 	DWORD* current_attack_status_dword = (DWORD*)0x1D2A234;
-	BYTE* current_attack_hit = (BYTE*)0x1D2A238;
+	BYTE* current_attack_param = (BYTE*)0x1D2A238;
 	BYTE* current_status_attack = (BYTE*)0x1D2A239;
 	WORD* current_attack_status_word = (WORD*)0x1D2A23E;
+	BYTE* current_attack_element_percent = (BYTE*)0x1D2A241;
 	BYTE* current_attack_element = (BYTE*)0x1D2A244;
 	BYTE* countdown_enabled = (BYTE*)0x1D2B813;
 	BYTE** current_character_commands = (BYTE**)0x1D76834;
@@ -131,6 +133,7 @@ struct FF8Funcs {
 	int(*DoMagicDamage)(int caster_id, int target_id, int attack_power, int magic_attack_type) = (int(*)(int, int, int, int))0x491AD0;
 	BYTE(*InflictStatuses)(int caster_id, int target_id, int damage_type) = (BYTE(*)(int, int, int))0x492090;
 	int(*DoDamage)(int attack_type, int caster_id, int target_id, int attack_power) = (int(*)(int, int, int, int))0x4922B0;
+	void(*SetEnemyScannedOnce)(int enemy_id) = (void(*)(int))0x493810;
 	void(*UpdateCrisisLevel)(int char_id) = (void(*)(int))0x4941F0;
 	BYTE*(*GetNonJGFAttackName)(int id) = (BYTE*(*)(int))0x495050;
 	BYTE*(*GetGFAttackName)(int id) = (BYTE*(*)(int))0x495070;
