@@ -6,9 +6,11 @@
 #include "structures.h"
 #include "memory.h"
 #include "battle.h"
+#include <unordered_map>
 
 #define SIZE 6
 #define VERSION 0
+std::unordered_map<DWORD, BYTE*> original_function_bytes;
 
 //TODO add version detection code from Steam module and improve code layout
 void PatchAddresses() {
@@ -29,23 +31,32 @@ void PatchAddresses() {
 }
 
 void PatchFunctions() {
-	BeginRedirect((LPVOID)ff8funcs.BdLinkTask, (LPVOID)BdLinkTask);
-	BeginRedirect((LPVOID)ff8funcs.GetFreeLinkTask, (LPVOID)GetFreeLinkTask);
-	BeginRedirect((LPVOID)ff8funcs.DoLinkTask, (LPVOID)DoLinkTask);
-	BeginRedirect((LPVOID)ff8funcs.Archive_GetFile, (LPVOID)Archive_GetFile);
+	BeginRedirect(ff8funcs.BdLinkTask, BdLinkTask);
+	BeginRedirect(ff8funcs.GetFreeLinkTask, GetFreeLinkTask);
+	BeginRedirect(ff8funcs.DoLinkTask, DoLinkTask);
+	BeginRedirect(ff8funcs.Archive_GetFile, Archive_GetFile);
 }
 
 //TODO tidy code and add unpatch code
 void BeginRedirect(LPVOID oldFunction, LPVOID newFunction)
 {
-	DWORD oldProtect, myProtect = PAGE_EXECUTE_READWRITE;
+	DWORD oldProtect = PAGE_EXECUTE_READWRITE;
 	BYTE JMP[SIZE] = { 0xE9, 0x90, 0x90, 0x90, 0x90, 0xC3 };         // 0xE9 = JMP 0x90 = NOP oxC3 = RET
-	//memcpy(JMP, tempJMP, SIZE);                                        // store jmp instruction to JMP
 	DWORD JMPSize = ((DWORD)newFunction - (DWORD)oldFunction - 5);  // calculate jump distance
-	VirtualProtect(oldFunction, SIZE,                       // assign read write protection
-		PAGE_EXECUTE_READWRITE, &oldProtect);
-	//memcpy(oldBytes, pOrigMBAddress, SIZE);                            // make backup
+	VirtualProtect(oldFunction, SIZE, PAGE_EXECUTE_READWRITE, &oldProtect);
+	original_function_bytes[(DWORD)oldFunction] = new BYTE[SIZE];
+	memcpy(original_function_bytes[(DWORD)oldFunction], oldFunction, SIZE);
 	memcpy(&JMP[1], &JMPSize, 4);                              // fill the nop's with the jump distance (JMP,distance(4bytes),RET)
 	memcpy(oldFunction, JMP, SIZE);                                 // set jump instruction at the beginning of the original function
 	VirtualProtect(oldFunction, SIZE, oldProtect, NULL);    // reset protection
+}
+
+void EndRedirect(LPVOID function)
+{
+	DWORD oldProtect = PAGE_EXECUTE_READWRITE;
+	VirtualProtect(function, SIZE, PAGE_EXECUTE_READWRITE, &oldProtect);
+	memcpy(function, original_function_bytes[(DWORD)function], SIZE);
+	VirtualProtect(function, SIZE, oldProtect, NULL);
+	delete(original_function_bytes[(DWORD)function]);
+	original_function_bytes.erase((DWORD)function);
 }

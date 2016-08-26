@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "battle.h"
 #include "memory.h"
+#include "OpenFF8.h"
 #include <algorithm>
 
 /*int LoadAttack(DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3) {
@@ -244,22 +245,14 @@ int PlayMagic(LinkTask& task_data) {
 }
 
 DWORD Archive_GetFile(BYTE* filename) {
-	DWORD oldProtect, myProtect = PAGE_EXECUTE_READWRITE;
-	BYTE original_bytes[6] = { 0x81, 0xEC, 0x7C, 0x04, 0x00, 0x00 };
-	BYTE new_bytes[6] = {};
 	char message[100] = "";
 	
 	snprintf(message, 100, "Loading file: %s\n", filename);
 	OutputDebugString(message);
-	VirtualProtect(ff8funcs.Archive_GetFile, 6,                       // assign read write protection
-		PAGE_EXECUTE_READWRITE, &oldProtect);
-	memcpy(new_bytes, ff8funcs.Archive_GetFile, 6);
-	memcpy(ff8funcs.Archive_GetFile, original_bytes, 6);
 
+	EndRedirect(ff8funcs.Archive_GetFile);
 	DWORD return_value = ff8funcs.Archive_GetFile(filename);
-
-	memcpy(ff8funcs.Archive_GetFile, new_bytes, 6);
-	VirtualProtect(ff8funcs.Archive_GetFile, 6, oldProtect, NULL);
+	BeginRedirect(ff8funcs.Archive_GetFile, Archive_GetFile);
 
 	return return_value;
 }

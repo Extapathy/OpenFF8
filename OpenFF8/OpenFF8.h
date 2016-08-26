@@ -3,3 +3,4 @@
 void PatchAddresses();
 void PatchFunctions();
 void BeginRedirect(LPVOID oldFunction, LPVOID newFunction);
+void EndRedirect(LPVOID function);
