@@ -32,6 +32,7 @@ void PatchFunctions() {
 	BeginRedirect((LPVOID)ff8funcs.BdLinkTask, (LPVOID)BdLinkTask);
 	BeginRedirect((LPVOID)ff8funcs.GetFreeLinkTask, (LPVOID)GetFreeLinkTask);
 	BeginRedirect((LPVOID)ff8funcs.DoLinkTask, (LPVOID)DoLinkTask);
+	BeginRedirect((LPVOID)ff8funcs.Archive_GetFile, (LPVOID)Archive_GetFile);
 }
 
 //TODO tidy code and add unpatch code

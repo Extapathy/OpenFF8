@@ -159,6 +159,7 @@ struct FF8Funcs {
 	void(*LoadMagicID)(WORD magic_id, TaskList*(**unk1)(MagicIDInitData& init_data)) = (void(*)(WORD, TaskList*(**)(MagicIDInitData&)))0x50AF20;
 	void(*Sub50AFC0)() = (void(*)())0x50AFC0;
 	int(*Sub50B080)(LinkTask& task_data) = (int(*)(LinkTask&))0x50B080;
+	DWORD(*Archive_GetFile)(BYTE* filename) = (DWORD(*)(BYTE*))0x51B4E0;
 	void(*UpdateFieldEntities)(int unk1) = (void(*)(int))0x529FF0;
 	void(*InitFieldEntities)() = (void(*)())0x52C650;
 	int(*GetDrawPointStatus)(int id) = (int(*)(int))0x52D150;

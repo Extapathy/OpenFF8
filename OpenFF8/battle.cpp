@@ -243,6 +243,27 @@ int PlayMagic(LinkTask& task_data) {
 	}
 }
 
+DWORD Archive_GetFile(BYTE* filename) {
+	DWORD oldProtect, myProtect = PAGE_EXECUTE_READWRITE;
+	BYTE original_bytes[6] = { 0x81, 0xEC, 0x7C, 0x04, 0x00, 0x00 };
+	BYTE new_bytes[6] = {};
+	char message[100] = "";
+	
+	snprintf(message, 100, "Loading file: %s\n", filename);
+	OutputDebugString(message);
+	VirtualProtect(ff8funcs.Archive_GetFile, 6,                       // assign read write protection
+		PAGE_EXECUTE_READWRITE, &oldProtect);
+	memcpy(new_bytes, ff8funcs.Archive_GetFile, 6);
+	memcpy(original_bytes, ff8funcs.Archive_GetFile, 6);
+
+	DWORD return_value = ff8funcs.Archive_GetFile(filename);
+
+	memcpy(ff8funcs.Archive_GetFile, new_bytes, 6);
+	VirtualProtect(ff8funcs.Archive_GetFile, 6, oldProtect, NULL);
+
+	return return_value;
+}
+
 //TODO finish sorting fire code
 /*DWORD* unkDEE360 = (DWORD*)0xDEE360;
 LinkTask* fire_task_dataA = (LinkTask*)0x24CA818;
