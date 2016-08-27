@@ -268,3 +268,40 @@ struct FieldEntity {
 	BYTE ladder_anim_first; //+253
 	BYTE ladder_anim_last; //+254
 };
+
+//0x1D76928
+struct BattleCharacterUI {
+	BYTE* character_name; //0x00
+	BYTE padding[4]; //0x04
+	WORD x; //0x08
+	WORD y; //0x0A
+	BYTE padding7[4]; //0x0C
+	DWORD unkdword10; //0x10
+	BYTE padding1[10]; //0x14
+	WORD character_hp; //0x1E
+	BYTE padding2[28]; //0x20
+	BYTE unkbyte3C; //0x3C
+	BYTE unkbyte3D; //0x3D
+	BYTE unkbyte3E; //0x3E
+	BYTE unkbyte3F; //0x3F
+	WORD unkword40; //0x40
+	WORD unkword42; //0x42
+	BYTE padding5[4]; //0x44
+	BYTE unkbyte48; //0x48 character ID?
+	BYTE unkbyte49; //0x49
+	WORD unkword4A; //0x4A
+	BYTE padding3[4]; //0x4C
+	BYTE unkbyte50; //0x50
+	BYTE unkbyte51; //0x51
+	BYTE unkbyte52; //0x52
+	BYTE unkbyte53; //0x53
+	DWORD unkdword54; //0x54
+	DWORD unkdword58; //0x58
+	DWORD unkdword5C; //0x5C
+	DWORD unkdword60; //0x60
+	DWORD unkdword64; //0x64
+	BYTE unkbyte68; //0x68
+	BYTE padding4[3]; //0x69
+};
+
+static_assert(sizeof(BattleCharacterUI) == 108, "BattleCharacterUI is wrong size.");

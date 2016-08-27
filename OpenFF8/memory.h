@@ -51,6 +51,9 @@ struct FF8Vars {
 	BYTE** current_character_limit_break = (BYTE**)0x1D76838;
 	BYTE* current_active_character_id = (BYTE*)0x1D76844;
 	BYTE* new_active_character_id = (BYTE*)0x1D76845;
+	//note start and end might not be correct but the size is
+	//start 0x1D76928
+	//end 0x1D76A6C
 	TaskList** unktasklist1D96A8C = (TaskList**)0x1D96A8C; //animation sequence
 	BYTE* unkbyte1D96A90 = (BYTE*)0x1D96A90;
 	TaskList** unktasklist1D96A94 = (TaskList**)0x1D96A94;
