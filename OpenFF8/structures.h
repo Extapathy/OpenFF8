@@ -289,7 +289,7 @@ struct BattleCharacterUI {
 	BYTE padding5[4]; //0x44
 	BYTE unkbyte48; //0x48 character ID?
 	BYTE unkbyte49; //0x49
-	WORD unkword4A; //0x4A
+	WORD name_x; //0x4A
 	BYTE padding3[4]; //0x4C
 	BYTE unkbyte50; //0x50
 	BYTE unkbyte51; //0x51
