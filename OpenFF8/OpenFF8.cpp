@@ -45,20 +45,20 @@ void PatchFunctions() {
 	//REDIRECT(WindowProc);
 
 
-	//REDIRECT(BdLinkTask);
-	//REDIRECT(GetFreeLinkTask);
-	//REDIRECT(DoLinkTask);
-	//REDIRECT(Archive_GetFile);
+	REDIRECT(BdLinkTask);
+	REDIRECT(GetFreeLinkTask);
+	REDIRECT(DoLinkTask);
+	REDIRECT(Archive_GetFile);
 }
 
 void UnpatchFunctions() {
 	//ENDREDIRECT(WindowProc);
 
 
-	//ENDREDIRECT(BdLinkTask);
-	//ENDREDIRECT(GetFreeLinkTask);
-	//ENDREDIRECT(DoLinkTask);
-	//ENDREDIRECT(Archive_GetFile);
+	ENDREDIRECT(BdLinkTask);
+	ENDREDIRECT(GetFreeLinkTask);
+	ENDREDIRECT(DoLinkTask);
+	ENDREDIRECT(Archive_GetFile);
 }
 
 //TODO tidy code and add unpatch code
