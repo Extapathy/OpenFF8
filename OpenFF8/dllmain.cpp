@@ -16,7 +16,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	case DLL_PROCESS_ATTACH:
 		char fullPath[MAX_PATH];
 		char fileName[_MAX_FNAME];
-		GetModuleFileName(NULL, fullPath, MAX_PATH);
+		GetModuleFileNameA(NULL, fullPath, MAX_PATH);
 		_splitpath_s(fullPath, NULL, 0, NULL, 0, fileName, _MAX_FNAME, NULL, 0);
 		isFF8 = strstr(fileName, "FF8") != NULL;
 		dll = hModule;

@@ -1,0 +1,44 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build Injector",
+            "command": "dotnet",
+            "args": [ "build", "DllInjector" ],
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build OpenFF8",
+            "type": "shell",
+            "command": "../build.bat",
+            // use options.cwd property if the Makefile is not in the project root ${workspaceRoot} dir
+            "options": {
+                "cwd": "${workspaceRoot}/OpenFF8/bin"
+            },
+            // start the build without prompting for task selection, use "group": "build" otherwise
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [ "build Injector" ]
+        },
+        {
+            "label": "inject dll",
+            "type": "shell",
+            "command": "dotnet",
+            // use options.cwd property if the Makefile is not in the project root ${workspaceRoot} dir
+            "args": ["run", "${workspaceFolder}/bin/Debug/netcoreapp2.1/DllInjector.dll", "--runtime", "win-x86", "${workspaceRoot}/OpenFF8/bin/OpenFF8.dll" ],
+            "options": {
+                "cwd": "${workspaceRoot}/DllInjector"
+            },
+            "dependsOn": [ "build OpenFF8" ]
+        }
+    ]
+}
