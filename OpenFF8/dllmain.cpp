@@ -25,7 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			PatchFunctions();
 			//Console seems to cause instability, so I've disabled it for now
 			//AllocConsole();
-			//freopen("CONOUT$", "w", stdout);
+			freopen("CONOUT$", "w", stdout);
 		}
 		break;
 	case DLL_THREAD_ATTACH:

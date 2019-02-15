@@ -87,6 +87,7 @@ struct FF8Vars {
 	FF8_VAR(0x1D99A8E, WORD, unkword1D99A8E);
 	FF8_VAR(0x1D99A90, WORD, unkword1D99A90);
 	FF8_VAR(0x1D99AAA, BYTE, unkbyte1D99AAA);
+	FF8_VAR(0x1D9CDC0, bool, script_debug);
 	FF8_VAR(0x1D9CDF1, BYTE, current_entity);
 	FF8_VAR(0x1D9CF88, FieldEntity*, entity_other);
 	FF8_VAR(0x1D9CF8C, FieldEntity*, entity_background);

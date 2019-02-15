@@ -245,11 +245,20 @@ struct FieldEntity {
 	DWORD stack[80]; //actual size unknown
 	DWORD templist[8]; //+0x140
 	BYTE padding[22];
+	DWORD flags; //+0x160 - FOOTSTEPSON, BGANIMESYNC
+	BYTE unkbyte174; // +0x174 - BGSHADE
+	BYTE unkbyte175; // +0x175 - BGSHADE
 	WORD instruction_pointer; //+0x176
-	BYTE stack_count; //+0x184
+	char stack_count; //+0x184
+	WORD unkword188; // +0x188 - BGDRAW
+	WORD unkword18C; // +0x18C - BGDRAW
+	WORD unkword18E; // +0x18E - BGDRAW
+	WORD unkword190; // +0x190 - BGDRAW
+	WORD unkword192; // +0x192 - BGDRAW
 	DWORD x_pos; //+0x190
 	DWORD y_pos; //+0x194
 	DWORD z_pos; //+0x198
+	DWORD unkdword19E; // +0x19E - BGSHADE
 	WORD push_radius; //+0x1F6
 	WORD talk_radius; //+0x1F8
 	WORD triangle_id; //+0x1FA
@@ -258,8 +267,8 @@ struct FieldEntity {
 	WORD anime_speed; //+0x208
 	WORD model; //+0x218
 	BYTE angle; //+0x241
-	BYTE push_disabled; //+0x249
 	BYTE talk_disabled; //+0x24B
+	BYTE push_disabled; //+0x249	
 	BYTE through_enabled; //+0x24C
 	BYTE base_anim_id; //+24F
 	BYTE base_anim_first; //+250

@@ -100,7 +100,7 @@ LinkTask* BdLinkTask(TaskList& task_list, int(*task)(LinkTask& task_data)) {
 		}
 	}
 
-	OutputDebugString("BdLinkTask: FAILED !!!!\n");
+	OutputDebugStringA("BdLinkTask: FAILED !!!!\n");
 	return NULL;
 }
 
@@ -248,7 +248,7 @@ DWORD Archive_GetFile(BYTE* filename) {
 	char message[100] = "";
 	
 	snprintf(message, 100, "Loading file: %s\n", filename);
-	OutputDebugString(message);
+	OutputDebugStringA(message);
 
 	EndRedirect(ff8funcs.Archive_GetFile);
 	DWORD return_value = ff8funcs.Archive_GetFile(filename);

@@ -74,9 +74,6 @@ namespace DllInjector
         static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
 
         [DllImport("kernel32.dll")]
-        static extern bool GetExitCodeThread(IntPtr hThread, out IntPtr lpExitCode);
-
-        [DllImport("kernel32.dll")]
         static extern bool VirtualFreeEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint dwFreeType);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -148,9 +145,10 @@ namespace DllInjector
 
             var targetAddress = IntPtr.Add(openFF8.BaseAddress, GetPayloadExportAddr(dllName, "UnloadDll").ToInt32());
             CallRemoteProc(process, targetAddress, IntPtr.Zero);
-            Thread.Sleep(2000);
-            if (process.Modules.Cast<ProcessModule>().Any(m => m.ModuleName.Equals(moduleName)))
-                return -1;
+            using (var newProcess = Process.GetProcessesByName("FF8_EN").SingleOrDefault()) {
+                if (newProcess.Modules.Cast<ProcessModule>().Any(m => m.ModuleName.Equals(moduleName)))
+                    return -1;
+            }
 
             return 0;
         }
@@ -159,6 +157,7 @@ namespace DllInjector
             var hLoaded = LoadLibraryExA(libName, IntPtr.Zero, 1);
             var lpFunc = GetProcAddress(hLoaded, procName);
             FreeLibrary(hLoaded);
+            CloseHandle(hLoaded);
             return IntPtr.Subtract(lpFunc, hLoaded.ToInt32());
         }
 
@@ -166,14 +165,18 @@ namespace DllInjector
             System.Console.WriteLine($"Calling function: 0x{procAddress.ToInt32(),08:X}");
             var threadID = CreateRemoteThread(process.Handle, IntPtr.Zero, 0, procAddress, arg, 0, IntPtr.Zero);
             WaitForSingleObject(threadID, -1);
+            CloseHandle(threadID);
         }
 
         static void AttachDll(Process process, string dllName) {
-            var address = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
+            var hKernel32 = GetModuleHandle("kernel32.dll");
+            var address = GetProcAddress(hKernel32, "LoadLibraryA");
             var arg = VirtualAllocEx(process.Handle, IntPtr.Zero, (uint)dllName.Length, AllocationType.Reserve | AllocationType.Commit, MemoryProtection.ReadWrite);
             WriteProcessMemory(process.Handle, arg, dllName, (uint)dllName.Length, UIntPtr.Zero);
             CallRemoteProc(process, address, arg);
             VirtualFreeEx(process.Handle, arg, 0, 0x8000);
+            CloseHandle(hKernel32);
+            CloseHandle(arg);
         }
     }
 }
