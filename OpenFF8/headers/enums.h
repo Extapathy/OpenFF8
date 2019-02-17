@@ -1,0 +1,33 @@
+namespace FieldEntityFlags {
+    enum Flags {
+        flag1,
+        flag2,
+        flag3,
+        flag4,
+        flag5,
+        flag6,
+        flag7,
+        flag8,
+        flag9,
+        flag10,
+        flag11,
+        flag12,
+        flag13,
+        flag14,
+        flag15,
+        flag16,
+        flag17,
+        flag18,
+        flag19,
+        flag20,
+        flag21,
+        flag22,
+        flag23,
+        flag24,
+        flag25,
+        flag26,
+        flag27,
+        flag28,
+        flag29
+    };
+}

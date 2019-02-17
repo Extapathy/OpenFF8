@@ -17,8 +17,14 @@
 
 #pragma pack(push, 1)
 struct FF8Vars {
+	FF8_VAR(0x1CE476A, short, unkword1CE476A);
+	FF8_VAR(0x1CE48A0, DWORD, keyspressed2);
+	FF8_VAR(0x1CE48A8, DWORD, enabledkeys2);
+	FF8_VAR(0x1CE48B0, DWORD, keyspressed1);
+	FF8_VAR(0x1CE48B8, DWORD, enabledkeys1);
 	FF8_VAR(0x1CF3E48, Kernel, kernel);
 	//0x1CFDC58 - save game start - TODO: use save game struct here
+	SaveGame* saveGame = (SaveGame*)0x1CFDC58;
 	DWORD* timer = (DWORD*)0x1CFE92C;
 	BYTE* ptr1CFE97A = (BYTE*)0x1CFE97A; //odin byte
 	BYTE* chocobo_world_flags = (BYTE*)0x1CFEFB8;
@@ -87,16 +93,18 @@ struct FF8Vars {
 	FF8_VAR(0x1D99A8E, WORD, unkword1D99A8E);
 	FF8_VAR(0x1D99A90, WORD, unkword1D99A90);
 	FF8_VAR(0x1D99AAA, BYTE, unkbyte1D99AAA);
-	FF8_VAR(0x1D9CDC0, bool, script_debug);
+	FF8_VAR(0x1D9CDC0, DWORD, script_debug);
 	FF8_VAR(0x1D9CDF1, BYTE, current_entity);
 	FF8_VAR(0x1D9CF88, FieldEntity*, entity_other);
 	FF8_VAR(0x1D9CF8C, FieldEntity*, entity_background);
 	FF8_VAR(0x1D9CF90, FieldEntity*, entity_door);
 	FF8_VAR(0x1D9D019, BYTE, entity_count_other);
+	FF8_VAR(0x1D9D020, FieldEntity**, unkfieldentity1D9D020);
 	FF8_VAR(0x1D9D0E0, BYTE, entity_count_line);
 	FF8_VAR(0x1D9D0E1, BYTE, entity_count_door);
 	FF8_VAR(0x1D9D0E8, BYTE, entity_count_background);
 	FF8_VAR(0x1D9D0F0, FieldEntity*, entity_line);
+	FF8_VAR(0x1DCB340, DWORD*, unkptrarr1DCB340);
 	FF8_FUNC_PTR(0x21DFEC4, current_magic_init_function, (MagicIDInitData& init_data), TaskList*);
 	IDirect3D9** direct3d_9;// = (IDirect3D9**)0x6C2DC00;
 	IDirect3DDevice9** direct3d_device_9;// = (IDirect3DDevice9**)0x6C2DC04;
@@ -105,6 +113,7 @@ struct FF8Vars {
 struct FF8Funcs {
 	FF8_FUNC_RET(0x40AC5B, WindowProc, (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam), LRESULT);
 	FF8_FUNC_RET(0x46B440, InitializeSound_CAL, (), DWORD);
+	FF8_FUNCTION(0x477890, Sub477890, (FieldEntity*));
 	FF8_FUNCTION(0x47E3F0, Sub47E3F0, (DWORD, DWORD, void(*)()));
 	FF8_FUNCTION(0x47E480, SetGFExists, (int GF_id));
 	FF8_FUNC_RET(0x47E530, GetDuelName, (int id), BYTE*);

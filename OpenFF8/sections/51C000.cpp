@@ -1,5 +1,7 @@
 #include "../structures.h"
 #include "../memory.h"
+#include "../headers/enums.h"
+#include <bitset>
 // mov eax,dword ptr ds:[1D9CE00]
 // mov ecx,dword ptr ss:[esp+4]
 // mov edx,dword ptr ss:[esp+8]
@@ -63,14 +65,14 @@ int SCRIPT_NOP(FieldEntity& entity, int arg) {
 
 void SCRIPT_CAL_ADD(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] + entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] += entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_SUB(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] - entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] -= entity.stack[entity.stack_count + 1];
 }
 
 
@@ -83,21 +85,21 @@ void SCRIPT_CAL_NEGATE(FieldEntity& entity) {
 
 void SCRIPT_CAL_MUL(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] * entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] *= entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_DIV(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] / entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] /= entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_MOD(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] % entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] %= entity.stack[entity.stack_count + 1];
 }
 
 
@@ -146,21 +148,21 @@ void SCRIPT_CAL_NOTEQUAL(FieldEntity& entity) {
 
 void SCRIPT_CAL_AND(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] & entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] &= entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_OR(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] | entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] |= entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_XOR(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] ^ entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] ^= entity.stack[entity.stack_count + 1];
 }
 
 
@@ -173,14 +175,14 @@ void SCRIPT_CAL_BITWISENOT(FieldEntity& entity) {
 
 void SCRIPT_CAL_BITSHIFTRIGHT(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] >> entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] >>= entity.stack[entity.stack_count + 1];
 }
 
 
 
 void SCRIPT_CAL_BITSHIFTLEFT(FieldEntity& entity) {
     entity.stack_count--;
-    entity.stack[entity.stack_count] = entity.stack[entity.stack_count] << entity.stack[entity.stack_count + 1];
+    entity.stack[entity.stack_count] <<= entity.stack[entity.stack_count + 1];
 }
 
 
@@ -239,33 +241,16 @@ int SCRIPT_GJMP(FieldEntity& entity, int arg) {
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// push ebx
-// push esi
-// push edi
-// lea esi,dword ptr ds:[eax+140]
-// mov edx,8
-// mov ecx,esi
-// mov bl,byte ptr ds:[eax+184]
-// add ecx,4
-// inc bl
-// dec edx
-// movsx edi,bl
-// mov byte ptr ds:[eax+184],bl
-// mov ebx,dword ptr ds:[ecx-4]
-// mov dword ptr ds:[eax+edi*4],ebx
-// mov dword ptr ds:[ecx-4],0
-// jne ff8_en.51C584
-// test byte ptr ds:[eax+160],20
-// je ff8_en.51C5B7
-// mov dword ptr ds:[esi],1
-// pop edi
-// pop esi
-// mov eax,2
-// pop ebx
-// ret 
 int SCRIPT_LBL(FieldEntity& entity, int arg) {
-    return 0;
+    for (int i = 0; i < 8; i++) {
+        entity.stack_count++;
+        entity.stack[entity.stack_count] = entity.templist[i];
+        entity.templist[i] = 0;
+    }
+    if (entity.flags.test(FieldEntityFlags::flag6)) {
+        entity.templist[0] = 1;
+    }
+    return 2;
 }
 
 
@@ -515,6 +500,74 @@ int SCRIPT_LBL(FieldEntity& entity, int arg) {
 // pop ebx
 // ret 
 int SCRIPT_RET(FieldEntity& entity, int arg) {
+    //esi = entity
+    //ecx = 8
+    //ebp = templist
+    //eax = templist
+    //TODO copy stack to temp vars
+    //for {}
+
+    //ebx = flags
+    //ecx = 0
+    //ecx = unkbyte174
+    entity.flags.reset(FieldEntityFlags::flag6);
+    //eax = entity.flags
+    //bl = 1 << unkbyte174
+    //cl = unkbyte175 | bl
+    //ebx = arg
+    //unkbyte175 = cl
+    //ecx = arg - 8
+    entity.unkflags175.set(entity.unkbyte174);
+    if (arg == 8) {
+
+    }
+    else if (arg == 9) {
+        entity.instruction_pointer = entity.stack[entity.stack_count];
+        entity.stack_count--;
+        return 4;
+    }
+
+    if (entity.flags.test(FieldEntityFlags::flag29) && entity.flags.test(FieldEntityFlags::flag17)) {
+        entity.unkdword1B8 = entity.unkdword1C4;
+        entity.unkdword1B4 = entity.unkdword1C0;
+        entity.unkword21A = entity.unkword21C;
+        entity.unkdword1BC = entity.unkdword1C8;
+        entity.unkbyte23C = 1;
+        entity.unkword21E = 0;
+        entity.unkword1FE = entity.unkword202;
+        entity.flags.reset(FieldEntityFlags::flag17);
+
+        if (entity.flags.test(FieldEntityFlags::flag19)) {
+            BYTE anim;
+            if (entity.unkword202 < (ff8vars.unkword1CE476A * 69020)/512) {
+                anim = entity.base_anim_first;
+            }
+            else {
+                anim = entity.base_anim_last;
+            }
+
+            if (anim != entity.unkbyte24E) {
+                int bx = 0;
+                int ecx = 0;
+                int cl = entity.unkbyte256;
+                BYTE bl = anim;
+                //eax = bl;
+                //sub532890(entity.unkbyte256, 0xD, anim, 0)
+                int edx = 0;
+                int dl = entity.unkbyte256;
+                entity.unkbyte24E = anim;
+                entity.unkword206 = 0;
+                int eax = ff8vars.unkptrarr1DCB340[entity.unkbyte256];
+                entity.flags.reset(12);
+                entity.flags.reset(13);
+                entity.flags.set(14);
+                entity.flags.reset(15);
+                entity.flags.reset(16);
+                entity.unkword20A = 0;
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -534,9 +587,7 @@ int SCRIPT_RET(FieldEntity& entity, int arg) {
 // pop esi
 // ret 
 int SCRIPT_PSHN_L(FieldEntity& entity, int arg) {
-    //entity.stack_count++;
-    //entity.stack[entity.stack_count] = Sub51c9c0(arg, 4)
-    return 2;
+    return 0;
 }
 
 
@@ -924,7 +975,22 @@ int SCRIPT_PSHAC(FieldEntity& entity, int arg) {
 // pop ebx
 // ret 
 int SCRIPT_REQ(FieldEntity& entity, int arg) {
-    return 0;
+    int esi = entity.stack[entity.stack_count--];
+    int ebx = entity.stack[entity.stack_count--];
+
+    if (ff8vars.unkfieldentity1D9D020[arg] == NULL) {
+        return 3;
+    }
+
+    int returnvalue;
+    if(ff8vars.current_entity != ff8vars.unkfieldentity1D9D020[arg]->unkbyte256) {
+        returnvalue = 3;
+    }
+    else {
+        entity.instruction_pointer++;
+        returnvalue = 4;
+    }
+    
 }
 
 
@@ -1454,7 +1520,7 @@ int SCRIPT_PREQEW(FieldEntity& entity, int arg) {
 
 
 int SCRIPT_DEBUG(FieldEntity& entity, int arg) {
-    ff8vars.script_debug = true;
+    ff8vars.script_debug = 1;
     return 3;
 }
 
@@ -1466,63 +1532,22 @@ int SCRIPT_HALT(FieldEntity& entity, int arg) {
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// mov cl,byte ptr ds:[eax+184]
-// movsx edx,cl
-// mov edx,dword ptr ds:[eax+edx*4]
-// shl edx,C
-// dec cl
-// mov dword ptr ds:[eax+194],edx
-// movsx edx,cl
-// mov byte ptr ds:[eax+184],cl
-// mov edx,dword ptr ds:[eax+edx*4]
-// shl edx,C
-// dec cl
-// mov dword ptr ds:[eax+190],edx
-// mov edx,dword ptr ds:[1D9D0F0]
-// mov byte ptr ds:[eax+184],cl
-// mov cx,word ptr ss:[esp+8]
-// push edx
-// mov word ptr ds:[eax+1FA],cx
-// call ff8_en.477890
-// add esp,4
-// mov eax,2
-// ret 
 int SCRIPT_SET(FieldEntity& entity, int arg) {
-    return 0;
+    entity.y_pos = entity.stack[entity.stack_count--] * 4096;
+    entity.x_pos = entity.stack[entity.stack_count--] * 4096;
+    entity.triangle_id = arg;
+    ff8funcs.Sub477890(ff8vars.entity_line);
+    return 2;
 }
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// mov cl,byte ptr ds:[eax+184]
-// movsx edx,cl
-// mov edx,dword ptr ds:[eax+edx*4]
-// shl edx,C
-// dec cl
-// mov dword ptr ds:[eax+198],edx
-// movsx edx,cl
-// mov byte ptr ds:[eax+184],cl
-// mov edx,dword ptr ds:[eax+edx*4]
-// shl edx,C
-// dec cl
-// mov dword ptr ds:[eax+194],edx
-// movsx edx,cl
-// mov byte ptr ds:[eax+184],cl
-// mov edx,dword ptr ds:[eax+edx*4]
-// shl edx,C
-// dec cl
-// mov dword ptr ds:[eax+190],edx
-// mov edx,dword ptr ds:[1D9D0F0]
-// mov byte ptr ds:[eax+184],cl
-// mov cx,word ptr ss:[esp+8]
-// push edx
-// mov word ptr ds:[eax+1FA],cx
-// call ff8_en.477890
-// add esp,4
-// mov eax,2
-// ret 
 int SCRIPT_SET3(FieldEntity& entity, int arg) {
+    entity.z_pos = entity.stack[entity.stack_count--] * 4096;
+    entity.y_pos = entity.stack[entity.stack_count--] * 4096;
+    entity.x_pos = entity.stack[entity.stack_count--] * 4096;
+    entity.triangle_id = arg;
+    ff8funcs.Sub477890(ff8vars.entity_line);
     return 0;
 }
 
@@ -1548,6 +1573,9 @@ int SCRIPT_SET3(FieldEntity& entity, int arg) {
 // mov eax,2
 // ret 
 int SCRIPT_IDLOCK(FieldEntity& entity, int arg) {
+    //ecx = arg
+    //eax
+    //ecx = ((arg-1) % 8) - 7
     return 0;
 }
 
@@ -1579,24 +1607,14 @@ int SCRIPT_IDUNLOCK(FieldEntity& entity, int arg) {
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// movsx ecx,byte ptr ds:[eax+184]
-// mov edx,dword ptr ds:[eax+ecx*4]
-// lea ecx,dword ptr ds:[eax+ecx*4]
-// dec edx
-// mov dword ptr ds:[ecx],edx
-// mov cl,byte ptr ds:[eax+184]
-// movsx edx,cl
-// cmp dword ptr ds:[eax+edx*4],0
-// jne ff8_en.51D8A1
-// dec cl
-// mov byte ptr ds:[eax+184],cl
-// mov eax,3
-// ret 
-// mov eax,1
-// ret 
 int SCRIPT_WAIT(FieldEntity& entity, int arg) {
-    return 0;
+    entity.stack[entity.stack_count]--;
+    if (entity.stack[entity.stack_count] == 0) {
+        entity.stack_count--;
+        return 3;
+    }
+
+    return 1;
 }
 
 
@@ -1627,13 +1645,9 @@ int SCRIPT_RND(FieldEntity& entity, int arg) {
 
 
 
-// mov ecx,dword ptr ss:[esp+4]
-// mov ax,word ptr ss:[esp+8]
-// mov word ptr ds:[ecx+218],ax
-// mov eax,2
-// ret 
 int SCRIPT_SETMODEL(FieldEntity& entity, int arg) {
-    return 0;
+    entity.model = arg;
+    return 2;
 }
 
 
@@ -1690,142 +1704,68 @@ int SCRIPT_GETDRESS(FieldEntity& entity, int arg) {
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// mov cl,byte ptr ss:[esp+8]
-// mov byte ptr ds:[eax+24F],cl
-// mov cl,byte ptr ds:[eax+184]
-// movsx edx,cl
-// dec cl
-// mov dl,byte ptr ds:[eax+edx*4]
-// mov byte ptr ds:[eax+184],cl
-// mov byte ptr ds:[eax+250],dl
-// movsx edx,cl
-// dec cl
-// mov dl,byte ptr ds:[eax+edx*4]
-// mov byte ptr ds:[eax+184],cl
-// mov byte ptr ds:[eax+251],dl
-// mov eax,2
-// ret 
 int SCRIPT_BASEANIME(FieldEntity& entity, int arg) {
-    return 0;
+    entity.base_anim_id = arg;
+    entity.base_anim_first = entity.stack[entity.stack_count--];
+    entity.base_anim_last = entity.stack[entity.stack_count--];
+    return 2;
 }
 
 
 
-// mov eax,dword ptr ss:[esp+4]
-// mov cl,byte ptr ss:[esp+8]
-// mov byte ptr ds:[eax+252],cl
-// mov cl,byte ptr ds:[eax+184]
-// movsx edx,cl
-// dec cl
-// mov dl,byte ptr ds:[eax+edx*4]
-// mov byte ptr ds:[eax+184],cl
-// mov byte ptr ds:[eax+253],dl
-// movsx edx,cl
-// dec cl
-// mov dl,byte ptr ds:[eax+edx*4]
-// mov byte ptr ds:[eax+184],cl
-// mov byte ptr ds:[eax+254],dl
-// mov eax,2
-// ret 
 int SCRIPT_LADDERANIME(FieldEntity& entity, int arg) {
-    return 0;
+    entity.ladder_anim_id = arg;
+    entity.ladder_anim_first = entity.stack[entity.stack_count--];
+    entity.ladder_anim_last = entity.stack[entity.stack_count--];
+    return 2;
 }
 
 
 
-// mov ecx,dword ptr ss:[esp+4]
-// push esi
-// mov esi,dword ptr ds:[1CE48B0]
-// mov al,byte ptr ds:[ecx+184]
-// movsx edx,al
-// mov edx,dword ptr ds:[ecx+edx*4]
-// and edx,esi
-// dec al
-// test edx,edx
-// mov byte ptr ds:[ecx+184],al
-// pop esi
-// je ff8_en.51DA86
-// mov dword ptr ds:[ecx+140],1
-// mov eax,2
-// ret 
-// mov dword ptr ds:[ecx+140],0
-// mov eax,2
-// ret 
 int SCRIPT_KEYSCAN(FieldEntity& entity, int arg) {
-    return 0;
+    if(ff8vars.keyspressed1 & arg) {
+        entity.templist[0] = 1;
+        return 2;
+    }
+
+    entity.templist[0] = 0;
+    return 2;
 }
 
 
 
-// mov ecx,dword ptr ss:[esp+4]
-// push esi
-// mov esi,dword ptr ds:[1CE48B8]
-// mov al,byte ptr ds:[ecx+184]
-// movsx edx,al
-// mov edx,dword ptr ds:[ecx+edx*4]
-// and edx,esi
-// dec al
-// test edx,edx
-// mov byte ptr ds:[ecx+184],al
-// pop esi
-// je ff8_en.51DAD6
-// mov dword ptr ds:[ecx+140],1
-// mov eax,2
-// ret 
-// mov dword ptr ds:[ecx+140],0
-// mov eax,2
-// ret 
 int SCRIPT_KEYON(FieldEntity& entity, int arg) {
-    return 0;
+    if(ff8vars.enabledkeys1 & arg) {
+        entity.templist[0] = 1;
+        return 2;
+    }
+
+    entity.templist[0] = 0;
+    return 2;
 }
 
 
 
-// mov ecx,dword ptr ss:[esp+4]
-// push esi
-// mov esi,dword ptr ds:[1CE48A0]
-// mov al,byte ptr ds:[ecx+184]
-// movsx edx,al
-// mov edx,dword ptr ds:[ecx+edx*4]
-// and edx,esi
-// dec al
-// test edx,edx
-// mov byte ptr ds:[ecx+184],al
-// pop esi
-// je ff8_en.51DB26
-// mov dword ptr ds:[ecx+140],1
-// mov eax,2
-// ret 
-// mov dword ptr ds:[ecx+140],0
-// mov eax,2
-// ret 
 int SCRIPT_KEYSCAN2(FieldEntity& entity, int arg) {
-    return 0;
+    if(ff8vars.keyspressed2 & arg) {
+        entity.templist[0] = 1;
+        return 2;
+    }
+
+    entity.templist[0] = 0;
+    return 2;
 }
 
 
 
-// mov ecx,dword ptr ss:[esp+4]
-// push esi
-// mov esi,dword ptr ds:[1CE48A8]
-// mov al,byte ptr ds:[ecx+184]
-// movsx edx,al
-// mov edx,dword ptr ds:[ecx+edx*4]
-// and edx,esi
-// dec al
-// test edx,edx
-// mov byte ptr ds:[ecx+184],al
-// pop esi
-// je ff8_en.51DB76
-// mov dword ptr ds:[ecx+140],1
-// mov eax,2
-// ret 
-// mov dword ptr ds:[ecx+140],0
-// mov eax,2
-// ret 
 int SCRIPT_KEYON2(FieldEntity& entity, int arg) {
-    return 0;
+    if(ff8vars.enabledkeys2 & arg) {
+        entity.templist[0] = 1;
+        return 2;
+    }
+
+    entity.templist[0] = 0;
+    return 2;
 }
 
 
@@ -5345,6 +5285,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov dword ptr ds:[eax+160],ecx
 // mov eax,2
 // ret 
+int SCRIPT_BGDRAW(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov ecx,dword ptr ds:[eax+160]
 // mov word ptr ds:[eax+188],FFFF
@@ -5359,14 +5305,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[eax+190],cx
 // mov eax,2
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_BGAOFF(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov cl,byte ptr ds:[eax+184]
 // movsx edx,cl
@@ -5378,6 +5322,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[eax+190],cx
 // mov eax,2
 // ret 
+int SCRIPT_BGANIMESPEED(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // mov al,byte ptr ds:[ecx+184]
 // movsx edx,al
@@ -5387,16 +5337,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[ecx+194],dx
 // mov eax,2
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_BGANIMEFLAG(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov edx,1
 // mov cl,byte ptr ds:[eax+174]
@@ -5451,16 +5397,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // je ff8_en.520995
 // mov eax,1
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_BGSHADE(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov ecx,dword ptr ds:[eax+160]
 // mov word ptr ds:[eax+19E],0
@@ -5529,8 +5471,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[eax+1A4],dl
 // mov eax,2
 // ret 
-// nop 
-// nop 
+int SCRIPT_BGSHADELOOP(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov ecx,dword ptr ds:[eax+160]
 // mov word ptr ds:[eax+19C],0
@@ -5538,20 +5484,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov dword ptr ds:[eax+160],ecx
 // mov eax,2
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_BGSHADESTOP(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov ecx,dword ptr ds:[eax+160]
 // and ch,F9
@@ -5578,21 +5516,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[eax+1A4],cl
 // mov eax,2
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_BGSHADEOFF(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov al,1
 // mov byte ptr ds:[1CE4882],al
 // mov byte ptr ds:[1CE4890],al
@@ -5620,37 +5549,23 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[1CE4886],dx
 // mov eax,3
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_SHAKE(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // xor al,al
 // mov byte ptr ds:[1CE4882],al
 // mov byte ptr ds:[1CE4890],al
 // mov eax,2
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_SHAKEOFF(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // mov byte ptr ds:[1CE4782],0
 // mov al,byte ptr ds:[ecx+184]
@@ -5667,14 +5582,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[1CE4790],dx
 // mov byte ptr ds:[1CE4780],al
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_DSCROLL(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov byte ptr ds:[1CE4780],4
 // mov byte ptr ds:[1CE4782],0
@@ -5696,6 +5609,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[1CE4790],dx
 // mov eax,2
 // ret 
+int SCRIPT_LSCROLL(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // mov byte ptr ds:[1CE4780],5
 // mov byte ptr ds:[1CE4782],0
@@ -5717,6 +5636,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov word ptr ds:[1CE4790],dx
 // mov eax,2
 // ret 
+int SCRIPT_CSCROLL(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // mov al,byte ptr ds:[ecx+184]
 // movsx edx,al
@@ -5731,9 +5656,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[1CE4781],cl
 // mov eax,3
 // ret 
-// nop 
-// nop 
-// nop 
+int SCRIPT_DSCROLLA(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov byte ptr ds:[1CE4780],1
@@ -5754,16 +5682,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // mov byte ptr ds:[1CE4781],cl
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_LSCROLLA(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov byte ptr ds:[1CE4782],0
@@ -5784,18 +5708,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[1CE4781],cl
 // mov byte ptr ds:[1CE4780],al
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_CSCROLLA(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov esi,dword ptr ds:[<&SG_FIELD_VARS>]
@@ -5812,7 +5730,13 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,3
 // pop esi
 // ret 
-// nop 
+int SCRIPT_DSCROLLP(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov esi,dword ptr ds:[<&SG_FIELD_VARS>]
@@ -5833,15 +5757,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // pop esi
 // mov byte ptr ds:[1CE4781],dl
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_LSCROLLP(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov esi,dword ptr ds:[<&SG_FIELD_VARS>]
@@ -5862,23 +5783,24 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[1CE4781],dl
 // pop esi
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_CSCROLLP(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov cl,byte ptr ds:[1CE4782]
 // xor eax,eax
 // cmp cl,2
 // sete al
 // inc eax
 // ret 
+int SCRIPT_SCROLLSYNC(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov edx,dword ptr ss:[esp+4]
 // push esi
 // mov al,byte ptr ds:[edx+184]
@@ -5896,11 +5818,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // ret 
 // mov eax,1
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_SCROLLSYNC2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push esi
 // push edi
@@ -5928,14 +5851,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,3
 // pop esi
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_DSCROLL2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push ebx
 // push esi
@@ -5970,6 +5891,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop ebx
 // ret 
+int SCRIPT_LSCROLL2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push ebx
 // push esi
@@ -6004,6 +5931,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop ebx
 // ret 
+int SCRIPT_CSCROLL2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push esi
 // mov al,byte ptr ds:[ecx+184]
@@ -6027,11 +5960,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov byte ptr ds:[eax+1CE4782],cl
 // mov eax,3
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_DSCROLLA2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push esi
 // push edi
@@ -6061,19 +5995,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop esi
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_LSCROLLA2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push esi
 // push edi
@@ -6103,19 +6030,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop esi
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_CSCROLLA2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov ecx,dword ptr ss:[esp+4]
 // push ebx
 // push esi
@@ -6141,9 +6061,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,3
 // pop ebx
 // ret 
-// nop 
-// nop 
-// nop 
+int SCRIPT_DSCROLLP2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push ebx
 // push esi
@@ -6175,17 +6098,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop ebx
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_LSCROLLP2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push ebx
 // push esi
@@ -6217,17 +6135,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop ebx
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_CSCROLLP2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push ebx
 // push ebp
@@ -6267,12 +6180,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop ebx
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_SCROLLMODE2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push esi
 // push edi
@@ -6298,12 +6211,12 @@ int SCRIPT_BGANIMESYNC(FieldEntity& entity, int arg) {
 // mov eax,2
 // pop esi
 // ret 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
-// nop 
+int SCRIPT_SCROLLRATIO2(FieldEntity& entity, int arg) {
+    return 0;
+}
+
+
+
 // mov eax,dword ptr ss:[esp+4]
 // push esi
 // push edi

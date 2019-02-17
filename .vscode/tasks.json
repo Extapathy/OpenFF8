@@ -15,9 +15,9 @@
         {
             "label": "build OpenFF8",
             "type": "shell",
-            "command": "../build.bat",
+            "command": "..\\build.bat",
             "options": {
-                "cwd": "${workspaceRoot}/OpenFF8/bin"
+                "cwd": "${workspaceFolder}/OpenFF8/bin"
             },
             "group": {
                 "kind": "build",
@@ -29,9 +29,9 @@
             "label": "inject dll",
             "type": "shell",
             "command": "dotnet",
-            "args": ["run", "${workspaceFolder}/bin/Debug/netcoreapp2.1/DllInjector.dll", "--runtime", "win-x86", "${workspaceRoot}/OpenFF8/bin/OpenFF8.dll" ],
+            "args": ["run", "${workspaceFolder}/bin/Debug/netcoreapp2.1/DllInjector.dll", "--runtime", "win-x86", "${workspaceFolder}/OpenFF8/bin/OpenFF8.dll" ],
             "options": {
-                "cwd": "${workspaceRoot}/DllInjector"
+                "cwd": "${workspaceFolder}/DllInjector"
             },
             "dependsOn": [ "build OpenFF8" ]
         }

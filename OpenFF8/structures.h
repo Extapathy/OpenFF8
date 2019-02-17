@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include <bitset>
 
 //loaded from 0x48BBD0
 //0x1D27B10
@@ -245,11 +246,11 @@ struct FieldEntity {
 	DWORD stack[80]; //actual size unknown
 	DWORD templist[8]; //+0x140
 	BYTE padding[22];
-	DWORD flags; //+0x160 - FOOTSTEPSON, BGANIMESYNC
-	BYTE unkbyte174; // +0x174 - BGSHADE
-	BYTE unkbyte175; // +0x175 - BGSHADE
+	std::bitset<32> flags; //+0x160 - FOOTSTEPSON, BGANIMESYNC, LBL, RET
+	BYTE unkbyte174; // +0x174 - BGSHADE, RET
+	std::bitset<8> unkflags175; // +0x175 - BGSHADE
 	WORD instruction_pointer; //+0x176
-	char stack_count; //+0x184
+	char stack_count; // +0x184
 	WORD unkword188; // +0x188 - BGDRAW
 	WORD unkword18C; // +0x18C - BGDRAW
 	WORD unkword18E; // +0x18E - BGDRAW
@@ -259,23 +260,39 @@ struct FieldEntity {
 	DWORD y_pos; //+0x194
 	DWORD z_pos; //+0x198
 	DWORD unkdword19E; // +0x19E - BGSHADE
+	DWORD unkdword1B4; // +0x1B4
+	DWORD unkdword1B8; // +0x1B8
+	DWORD unkdword1BC; // +0x1BC
+	DWORD unkdword1C0; // +0x1C0
+	DWORD unkdword1C4; // +0x1C4
+	DWORD unkdword1C8; // +0x1C8
 	WORD push_radius; //+0x1F6
 	WORD talk_radius; //+0x1F8
 	WORD triangle_id; //+0x1FA
-	//WORD move_speed; //+0x1FE
-	//WORD move_speed; //+0x200
+	WORD unkword1FE; // +0x1FE MSPEED
+	//WORD move_speed; //+0x200 MSPEED
+	WORD unkword202; // +0x202
+	WORD unkword206; //+0x206
 	WORD anime_speed; //+0x208
+	WORD unkword20A; //+0x20A
+	WORD unkword20C; //+0x20C
 	WORD model; //+0x218
+	WORD unkword21A; // +0x21A
+	WORD unkword21C; // +0x21C
+	WORD unkword21E; // +0x21E
+	BYTE unkbyte23C; // +0x23C
 	BYTE angle; //+0x241
 	BYTE talk_disabled; //+0x24B
 	BYTE push_disabled; //+0x249	
 	BYTE through_enabled; //+0x24C
+	BYTE unkbyte24E; //+24E
 	BYTE base_anim_id; //+24F
 	BYTE base_anim_first; //+250
 	BYTE base_anim_last; //+251
 	BYTE ladder_anim_id; //+252
 	BYTE ladder_anim_first; //+253
 	BYTE ladder_anim_last; //+254
+	BYTE unkbyte256; //+256
 };
 
 //0x1D76928
@@ -314,3 +331,71 @@ struct BattleCharacterUI {
 };
 
 static_assert(sizeof(BattleCharacterUI) == 108, "BattleCharacterUI is wrong size.");
+
+struct SaveGame {
+	WORD checksum; //0x1CFDC58
+	WORD unkword0002;
+	WORD preview_location_id;
+	WORD preview_first_character_current_hp;
+	WORD preview_first_character_max_hp;
+	WORD preview_save_count;
+	DWORD preview_gil_amount;
+	DWORD preview_seconds_played;
+	BYTE preview_first_character_level;
+	BYTE preview_first_character_portrait;
+	BYTE preview_second_character_portrait;
+	BYTE preview_third_character_portrait;
+	char squall_name[12];
+	char rinoa_name[12];
+	char angelo_name[12];
+	char boko_name[12];
+	DWORD current_disk;
+	DWORD current_save;
+	SaveGameGF gfs[16];
+	SaveGameCharacter characters[8];
+	BYTE shops[400];
+	BYTE configuration[20];
+	BYTE party[4];
+	BYTE known_weapons[4];
+	char griever_name[12];
+	WORD unk1;
+	WORD unk2;
+	int gil_amount;
+	int gil_amount_laguna;
+	WORD limit_break_quistis;
+	WORD limit_break_zell;
+	BYTE limit_break_irvine;
+	BYTE limit_break_selphie;
+	BYTE limit_break_angelo_completed;
+	BYTE limit_break_angelo_known;
+
+};
+
+static_assert(sizeof(SaveGame) == 5024, "SaveGame is wrong size.");
+
+struct SaveGameItem {
+	WORD id;
+	WORD quantity;
+};
+
+struct SaveGameGF {
+	char name[12]; // 0x00
+	DWORD exp; // 0x0C
+	BYTE unk; // 0x10
+	bool exists; // 0x11
+	WORD hp; // 0x12
+	std::bitset<128> complete_abilities; // 0x14
+	BYTE abilities[24]; // 0x24
+	WORD kills; // 0x3C
+	WORD kos; // 0x3E
+	BYTE learning_ability; // 0x40
+	BYTE forgotten_abilities[3]; // 0x41
+};
+
+static_assert(sizeof(SaveGameGF) == 68, "SaveGameGF is wrong size.");
+
+struct SaveGameCharacter {
+	BYTE padding[152];
+};
+
+static_assert(sizeof(SaveGameCharacter) == 152, "SaveGameCharacter is wrong size.");
