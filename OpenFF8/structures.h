@@ -332,62 +332,12 @@ struct BattleCharacterUI {
 
 static_assert(sizeof(BattleCharacterUI) == 108, "BattleCharacterUI is wrong size.");
 
-struct SaveGame {
-	WORD checksum; //0x1CFDC58
-	WORD unkword0002;
-	WORD preview_location_id;
-	WORD preview_first_character_current_hp;
-	WORD preview_first_character_max_hp;
-	WORD preview_save_count;
-	DWORD preview_gil_amount;
-	DWORD preview_seconds_played;
-	BYTE preview_first_character_level;
-	BYTE preview_first_character_portrait;
-	BYTE preview_second_character_portrait;
-	BYTE preview_third_character_portrait;
-	char squall_name[12];
-	char rinoa_name[12];
-	char angelo_name[12];
-	char boko_name[12];
-	DWORD current_disk;
-	DWORD current_save;
-	SaveGameGF gfs[16];
-	SaveGameCharacter characters[8];
-	BYTE shops[400];
-	BYTE configuration[20];
-	BYTE party[4];
-	BYTE known_weapons[4];
-	char griever_name[12];
-	WORD unk1;
-	WORD unk2;
-	int gil_amount;
-	int gil_amount_laguna;
-	WORD limit_break_quistis;
-	WORD limit_break_zell;
-	BYTE limit_break_irvine;
-	BYTE limit_break_selphie;
-	BYTE limit_break_angelo_completed;
-	BYTE limit_break_angelo_known;
-	BYTE angelo_points[8];
-	BYTE item_battle_order[32];
-	SaveGameItem items[198];
-	DWORD game_time;
-	DWORD countdown;
-	DWORD unk3;
-	DWORD victory_count;
-	WORD unk4;
-	WORD battles_escaped;
-	DWORD battle_vars[8];
-	BYTE magic_drawn_once[8];
-	BYTE enemies_scanned_once[20];
-};
-
-static_assert(sizeof(SaveGame) == 5024, "SaveGame is wrong size.");
-
 struct SaveGameItem {
-	WORD id;
-	WORD quantity;
+	BYTE id;
+	BYTE quantity;
 };
+
+static_assert(sizeof(SaveGameItem) == 2, "SaveGameItem is wrong size.");
 
 struct SaveGameGF {
 	char name[12]; // 0x00
@@ -414,3 +364,75 @@ static_assert(sizeof(SaveGameCharacter) == 152, "SaveGameCharacter is wrong size
 struct FieldVars {
 	BYTE padding[1280];
 };
+
+struct SaveGame {
+	WORD checksum; //0x1CFDC58
+	WORD unkword0002; //0x1CFDC5A
+	WORD preview_location_id; //0x1CFDC5C
+	WORD preview_first_character_current_hp; //0x1CFDC5E
+	WORD preview_first_character_max_hp; //0x1CFDC60
+	WORD preview_save_count; //0x1CFDC62
+	DWORD preview_gil_amount; //0x1CFDC64
+	DWORD preview_seconds_played; //0x1CFDC68
+	BYTE preview_first_character_level; //0x1CFDC6C
+	BYTE preview_first_character_portrait; //0x1CFDC6D
+	BYTE preview_second_character_portrait; //0x1CFDC6E
+	BYTE preview_third_character_portrait; //0x1CFDC6F
+	char squall_name[12]; //0x1CFDC70
+	char rinoa_name[12]; //0x1CFDC7C
+	char angelo_name[12]; //0x1CFDC88
+	char boko_name[12]; //0x1CFDC94
+	DWORD current_disk; //0x1CFDCA0
+	DWORD current_save; //0x1CFDCA4
+	SaveGameGF gfs[16]; //0x1CFDCA8
+	SaveGameCharacter characters[8]; //0x1CFE0E8
+	BYTE shops[400]; //0x1CFE5A8
+	BYTE configuration[20]; //0x1CFE738
+	BYTE party1[4]; //0x1CFE74C
+	BYTE known_weapons[4]; //0x1CFE750
+	char griever_name[12]; //0x1CFE754
+	WORD unk1; //0x1CFE760
+	WORD unk2; //0x1CFE762
+	int gil_amount; //0x1CFE764
+	int gil_amount_laguna; //0x1CFE768
+	WORD limit_break_quistis; //0x1CFE76C
+	WORD limit_break_zell; //0x1CFE76E
+	BYTE limit_break_irvine; //0x1CFE770
+	BYTE limit_break_selphie; //0x1CFE771
+	BYTE limit_break_angelo_completed; //0x1CFE772
+	BYTE limit_break_angelo_known; //0x1CFE773
+	BYTE angelo_points[8]; //0x1CFE774
+	BYTE item_battle_order[32]; //0x1CFE77C
+	SaveGameItem items[198]; //0x1CFE79C
+	DWORD game_time; //0x1CFE928
+	DWORD countdown; //0x1CFE92C
+	DWORD unk3; //0x1CFE930
+	DWORD victory_count; //0x1CFE934
+	WORD unk4; //0x1CFE938
+	WORD battles_escaped; //0x1CFE93A
+	DWORD battle_vars[8]; //0x1CFE93C
+	BYTE magic_drawn_once[8]; //0x1CFE95C
+	BYTE enemies_scanned_once[20]; //0x1CFE964
+	BYTE renzokuken_auto; //0x1CFE978
+	BYTE renzokuken_indicator; //0x1CFE979
+	BYTE dream_odin_flags; //0x1CFE97A
+	BYTE tutorial_info[16]; //0x1CFE97B
+	BYTE seed_test_level; //0x1CFE98B
+	DWORD unk5; //0x1CFE98C
+	BYTE party2[4]; //0x1CFE990
+	DWORD unk6; //0x1CFE994
+	WORD current_module; //0x1CFE998
+	WORD current_field; //0x1CFE99A
+	WORD previous_field; //0x1CFE99C
+	BYTE pos[12]; //0x1CFE99E
+	WORD triangle_id[3]; //0x1CFE9AA
+	BYTE direction[3]; //0x1CFE9B0
+	BYTE unk7; //0x1CFE9B3
+	DWORD unk8; //0x1CFE9B4
+	FieldVars field_vars; //0x1CFE9B8
+	BYTE world_map[128]; //0x1CFEEB8
+	BYTE triple_triad[128]; //0x1CFEF38
+	BYTE chocobo_world[64]; //0x1CFEFB8
+};
+
+static_assert(sizeof(SaveGame) == 5024, "SaveGame is wrong size.");

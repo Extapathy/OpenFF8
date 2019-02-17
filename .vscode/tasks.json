@@ -4,7 +4,7 @@
         {
             "label": "build Injector",
             "command": "dotnet",
-            "args": [ "build", "DllInjector" ],
+            "args": [ "build", "DllInjector", "--runtime", "win-x86" ],
             "type": "shell",
             "group": "build",
             "presentation": {
@@ -29,7 +29,7 @@
             "label": "inject dll",
             "type": "shell",
             "command": "dotnet",
-            "args": ["run", "${workspaceFolder}/bin/Debug/netcoreapp2.1/DllInjector.dll", "--runtime", "win-x86", "${workspaceFolder}/OpenFF8/bin/OpenFF8.dll" ],
+            "args": ["run", "${workspaceFolder}/bin/Debug/netcoreapp2.1/win-x86/DllInjector.dll", "--runtime", "win-x86", "${workspaceFolder}/OpenFF8/bin/OpenFF8.dll" ],
             "options": {
                 "cwd": "${workspaceFolder}/DllInjector"
             },

@@ -24,7 +24,7 @@ struct FF8Vars {
 	FF8_VAR(0x1CE48B8, DWORD, enabledkeys1);
 	FF8_VAR(0x1CF3E48, Kernel, kernel);
 	//0x1CFDC58 - save game start - TODO: use save game struct here
-	SaveGame* saveGame = (SaveGame*)0x1CFDC58;
+	FF8_VAR(0x1CFDC58, SaveGame, saveGame);
 	DWORD* timer = (DWORD*)0x1CFE92C;
 	BYTE* ptr1CFE97A = (BYTE*)0x1CFE97A; //odin byte
 	BYTE* chocobo_world_flags = (BYTE*)0x1CFEFB8;
