@@ -368,7 +368,18 @@ struct SaveGame {
 	BYTE limit_break_selphie;
 	BYTE limit_break_angelo_completed;
 	BYTE limit_break_angelo_known;
-
+	BYTE angelo_points[8];
+	BYTE item_battle_order[32];
+	SaveGameItem items[198];
+	DWORD game_time;
+	DWORD countdown;
+	DWORD unk3;
+	DWORD victory_count;
+	WORD unk4;
+	WORD battles_escaped;
+	DWORD battle_vars[8];
+	BYTE magic_drawn_once[8];
+	BYTE enemies_scanned_once[20];
 };
 
 static_assert(sizeof(SaveGame) == 5024, "SaveGame is wrong size.");
@@ -399,3 +410,7 @@ struct SaveGameCharacter {
 };
 
 static_assert(sizeof(SaveGameCharacter) == 152, "SaveGameCharacter is wrong size.");
+
+struct FieldVars {
+	BYTE padding[1280];
+};
