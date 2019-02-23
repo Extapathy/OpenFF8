@@ -6,8 +6,93 @@
 //loaded from 0x48BBD0
 //0x1D27B10
 #pragma pack(1)
+struct Item {
+	BYTE id;
+	BYTE amount;
+};
+
+struct Action {
+	BYTE type; //??? 0x02 = generic magic
+	BYTE animscript; //???
+	WORD id;
+};
+
+struct MonsterInfo {
+	char name[24]; //FF8 encoded - length might be less than this
+
+	BYTE HP[4]; //HP = (HP[0]*x*x)/20 + (HP[0] + 100*HP[2])*x + 10*HP[1] + 1000*HP[3], where x = monster lvl
+	BYTE str[4];
+	BYTE vit[4];
+	BYTE mag[4];
+	BYTE spr[4];
+	BYTE spd[4];
+	BYTE eva[4];
+
+	Action Roster[48];
+	//Action RosterM[16];
+	//Action RosterH[16];
+
+	BYTE Unk1[4];
+
+	BYTE Card[3]; //1st Byte = Card Drop, 2nd Byte = Carded into, 3rd Byte = Rarely Carded into, 0xFF = no drop/can't card
+	BYTE Devour[3]; //Low, Med and High lvl Devour effect id's
+
+	BYTE unk2[6];
+
+	USHORT LowLvlDraw[4];
+	USHORT MedLvlDraw[4];
+	USHORT HighLvlDraw[4];
+
+	Item LowLvlMug[2];
+	Item LowLvlRMug[2];
+	Item MedLvlMug[2];
+	Item MedLvlRMug[2];
+	Item HighLvlMug[2];
+	Item HighLvlRMug[2];
+
+	Item LowLvlDrop[2];
+	Item LowLvlRDrop[2];
+	Item MedLvlDrop[2];
+	Item MedLvlRDrop[2];
+	Item HighLvlDrop[2];
+	Item HighLvlRDrop[2];
+
+	BYTE unk3[20];
+
+	BYTE ElemRes[8]; //These are how resistant the monster is to each element 0 = very weak
+				//0 - Fire
+				//1 - Ice
+				//2 - Thunder
+				//3 - Earth
+				//4 - Poison
+				//5 - Wind
+				//6 - Water
+				//7 - Holy
+	BYTE StatusRes[20]; //Status resistances 0xFF = immune
+				//0 - Death
+				//1 - Poison
+				//2 - Petrify
+				//3 - Darkness
+				//4 - Silence
+				//5 - Beserk
+				//6 - Zombie
+				//7 - Sleep
+				//8 - Haste
+				//9 - Slow
+				//10 - Stop
+				//11 - Regen
+				//12 - Reflect
+				//13 - Doom (red timer) - command/doomtrain
+				//14 - Slow Petrify? (white timer) - cast using doomtrain
+				//15 - Float
+				//16 - Confuse
+				//17 - Drain
+				//18 - ???
+				//19 - ???
+};
+
 struct Character {
-	BYTE **infoSection; //0x1D27B10 - points to section 7 of a loaded dat file - NULL for SeeDs
+	MonsterInfo *infoSection; //0x1D27B10 - points to section 7 of a loaded dat file - NULL for SeeDs
 	BYTE **aiSection; //0x1D27B14 -  NULL for SeeDs
 	DWORD status1D27B18; //0x1D27B18 0x27
 	BYTE status; //0x1D27B1C - MSB - reflect / shell / protect / regen / stop / slow / haste / sleep - LSB
@@ -111,15 +196,15 @@ struct UnkStruct1D99A40 {
 static_assert(sizeof(UnkStruct1D99A40) == 144, "UnkStruct1D99A40 is wrong size.");
 
 struct MagicData {
-	BYTE unkbyte00;
-	BYTE attack_type;
-	BYTE unkbyte02;
-	BYTE unkbyte03;
-	WORD unkword04;
-	WORD magic_id;
-	DWORD* unk08;
-	char* attack_name;
-	BYTE padding[4];
+	BYTE unkbyte03; //1D280C4
+	BYTE attack_type; //1D280C5
+	BYTE unkbyte05; //1D280C6
+	BYTE unkbyte06; //1D280C7
+	WORD unkword07; //1D280C8
+	WORD magic_id; //1D280CA
+	DWORD* unk0B; //1D280CC
+	char* attack_name; //1D280D0
+	BYTE padding[4]; //1D280D4
 };
 
 static_assert(sizeof(MagicData) == 20, "MagicData is wrong size.");
@@ -213,15 +298,15 @@ static_assert(sizeof(KernelBattleItem) == 24, "KernelBattleItem is wrong size.")
 //TODO finish kernel
 struct Kernel {
 	DWORD section_count;
-	WORD offsets[56];
-	KernelBattleCommand battle_commands[39];
-	KernelMagicData magic[57];
-	KernelGFData GFs[16];
-	KernelEnemyAttack enemy_attacks[384];
-	KernelWeapon weapons[33];
-	KernelRenzokukenFinisher renzokuken_finishers[4];
-	KernelCharacter characters[11];
-	KernelBattleItem battle_items[33];
+	WORD offsets[56]; //0x1CF3E4C
+	KernelBattleCommand battle_commands[39]; //0x1CF3F2C
+	KernelMagicData magic[57]; //0x1CF4064
+	KernelGFData GFs[16]; //0x1CF4DC0
+	KernelEnemyAttack enemy_attacks[384]; //0x1CF5600
+	KernelWeapon weapons[33]; //0x1CF7400
+	KernelRenzokukenFinisher renzokuken_finishers[4]; //0x1CF758C
+	KernelCharacter characters[11]; //0x1CF75EC
+	KernelBattleItem battle_items[33]; //0x1CF7778
 };
 
 struct MagicData2 {

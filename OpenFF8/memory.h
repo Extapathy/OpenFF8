@@ -36,26 +36,37 @@ struct FF8Vars {
 	FF8_VAR(0x1CFF6E0, WORD, encounter_id);
 	FF8_VAR(0x1CFF6E2, WORD, battle_flags);
 	//BYTE* current_attack_flagsA = (BYTE*)0x1D27ADC;
-	FF8_VAR(0x1D27B10, Character, character_info); //208 byte structure
+	FF8_VAR(0x1D27B0E, BYTE, unkbyte1D27B0E);
+	FF8_VAR(0x1D27B10, Character*, character_info); //208 byte structure
 	FF8_VAR(0x1D280C0, BYTE, attack_queue_count);
-	FF8_VAR(0x1D280C4, MagicData, attack_queue_data);
+	FF8_VAR(0x1D280C4, MagicData*, attack_queue_data);
+	FF8_VAR(0x1D280C2, BYTE, unkbyte1D280C2);
 	FF8_VAR(0x1D287E0, DWORD, ptr1D287E0); //used in func 0x48BA10
-	FF8_VAR(0x1D28814, BYTE, ptr1D28814); //used in func 0x48BA10, array of 8?
-	FF8_VAR(0x1D28854, BYTE, ptr1D28854); //used in func 0x48BA10, array of 8?
-	FF8_VAR(0x1D2885C, BYTE, ptr1D2885C); //used in func 0x48BA10, array of 8?
-	FF8_VAR(0x1D28D98, DWORD, battle_vars); //- 60 to 67 - base address used is 0x1D28C18 - array of size 8
+	FF8_VAR(0x1D28814, BYTE, unkbyte1D28814); //used in func 0x48BA10, array of 8?
+	FF8_VAR(0x1D28854, BYTE, unkbyte1D28854); //used in func 0x48BA10, array of 8?
+	FF8_VAR(0x1D2885C, BYTE, unkbyte1D2885C); //used in func 0x48BA10, array of 8?
+	FF8_VAR(0x1D28D98, DWORD*, battle_vars); //- 60 to 67 - base address used is 0x1D28C18 - array of size 8
+	FF8_VAR(0x1D28DCD, BYTE, unkbyte1D28DCD);
 	FF8_VAR(0x1D28DDC, BYTE*, current_battle_message);
 	FF8_VAR(0x1D28DE4, WORD, dead_timer);
+	FF8_VAR(0x1D28DF6, BYTE, unkbyte1D28DF6);
 	FF8_VAR(0x1D28DF7, BYTE, unkbyte1D28DF7);
-	FF8_VAR(0x1D28DFA, BYTE, ptr1D28DFA);
-	FF8_VAR(0x1D28DFB, BYTE, ptr1D28DFB); //used in opcode 0x04 case 0xD1
+	FF8_VAR(0x1D28DF9, BYTE, unkbyte1D28DF9);
+	FF8_VAR(0x1D28DFA, BYTE, unkbyte1D28DFA);
+	FF8_VAR(0x1D28DFB, BYTE, unkbyte1D28DFB); //used in opcode 0x04 case 0xD1
+	FF8_VAR(0x1D28DFC, BYTE, unkbyte1D28DFC);
+	FF8_VAR(0x1D28DFD, BYTE, unkbyte1D28DFD);
 	FF8_VAR(0x1D28E00, BYTE, unkbyte1D28E00);
-	FF8_VAR(0x1D28E06, BYTE, ptr1D28E06);
+	FF8_VAR(0x1D28E06, BYTE, unkbyte1D28E06);
 	FF8_VAR(0x1D28E09, bool, init_done);
+	FF8_VAR(0x1D28E0B, BYTE, unkbyte1D28E0B);
+	FF8_VAR(0x1D28E11, BYTE, unkbyte1D28E11);
+	FF8_VAR(0x1D28E12, BYTE, unkbyte1D28E12);
+	FF8_VAR(0x1D28E13, BYTE, unkbyte1D28E13);
 	//BYTE* current_attack_flags = (BYTE*)0x1D28E0E;
 	FF8_VAR(0x1D28E21, BYTE, unkbyte1D28E21);
 	FF8_VAR(0x1D28E2D, BYTE, ptr1D28E2D);
-	FF8_VAR(0x1D28E83, unk1D28E83, monster_info); //71 byte structure
+	FF8_VAR(0x1D28E83, unk1D28E83*, monster_info); //71 byte structure
 	FF8_VAR(0x1D2A228, BYTE, ptr1D2A228);
 	FF8_VAR(0x1D2A230, DWORD, ptr1D2A230);
 	FF8_VAR(0x1D2A234, DWORD, current_attack_status_dword);
@@ -114,7 +125,11 @@ struct FF8Funcs {
 	FF8_FUNC_RET(0x40AC5B, WindowProc, (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam), LRESULT);
 	FF8_FUNC_RET(0x46B440, InitializeSound_CAL, (), DWORD);
 	FF8_FUNCTION(0x477890, Sub477890, (FieldEntity*));
-	FF8_FUNCTION(0x47E3F0, Sub47E3F0, (DWORD, DWORD, void(*)()));
+	FF8_FUNCTION(0x47D930, Sub47D930, (DWORD, DWORD));
+	FF8_FUNCTION(0x47E080, Sub47E080, (DWORD));
+	FF8_FUNCTION(0x47E200, Sub47E200, (void(*)()));
+	FF8_FUNCTION(0x47E220, Sub47E220, (BYTE*, DWORD, DWORD, DWORD, DWORD));
+	FF8_FUNC_RET(0x47E3F0, Sub47E3F0, (DWORD, DWORD, void(*)()), void*);
 	FF8_FUNCTION(0x47E480, SetGFExists, (int GF_id));
 	FF8_FUNC_RET(0x47E530, GetDuelName, (int id), BYTE*);
 	FF8_FUNC_RET(0x47E560, GetDuelDescription, (int id), BYTE*);
@@ -132,6 +147,7 @@ struct FF8Funcs {
 	FF8_FUNC_RET(0x47E9C0, GetMagicDescription, (int id), BYTE*);
 	FF8_FUNC_RET(0x47EA30, GetItemName, (int id), BYTE*);
 	FF8_FUNC_RET(0x47EA90, GetItemDescription, (int id), BYTE*);
+	FF8_FUNC_RET(0x47EAF0, GetCharacterName1, (int id), BYTE*);
 	//character name functions here
 	FF8_FUNC_RET(0x47EBA0, GetWeaponName, (int id), BYTE*);
 	FF8_FUNC_RET(0x47EBD0, GetCommandName, (int id), BYTE*);
@@ -142,8 +158,12 @@ struct FF8Funcs {
 	FF8_FUNCTION(0x482C90, Sub482C90, (void(*)())); //Used in opcode 0x1C and 0x20
 	FF8_FUNCTION(0x482F70, DeadTimeReset, ());
 	FF8_FUNCTION(0x482F80, DeadTimeTick, ());
+	FF8_FUNC_RET(0x483790, Sub483790, (BYTE, BYTE), BYTE);
+	FF8_FUNC_RET(0x4837E0, Sub4837E0, (BYTE, DWORD), BYTE);
+	FF8_FUNC_RET(0x483860, Sub483860, (DWORD), DWORD);
 	FF8_FUNCTION(0x484490, SetMaxATB, (DWORD id));
 	FF8_FUNCTION(0x4844D0, SetStartATB, (DWORD id));
+	FF8_FUNCTION(0x485F00, Sub485F00, (DWORD));
 	FF8_FUNC_RET(0x4860A0, CountValidTargets, (), DWORD); //0xFF if no valid targets - counts SeeDs in battle
 	FF8_FUNCTION(0x4877F0, DoMonsterTurn, (int id, int unk));
 	FF8_FUNC_RET(0x487D80, HasBattleItem, (int id), BOOL);
@@ -153,8 +173,11 @@ struct FF8Funcs {
 	FF8_FUNCTION(0x48BBD0, InitMonster, (DWORD id, DWORD unk1, DWORD unk2));
 	FF8_FUNCTION(0x48C1C0, GetMonsterStats, (DWORD id));
 	FF8_FUNC_RET(0x48C3F0, GetMonsterStat, (int level, BYTE *datfile, int stat), DWORD);
+	FF8_FUNCTION(0x48C5C0, Sub48C5C0, (DWORD));
 	FF8_FUNC_RET(0x48CCB0, GetItemAmount, (int item_id), DWORD);
 	FF8_FUNC_RET(0x48D200, LoadAttack, (DWORD caster_id, DWORD kernel_id, DWORD id, DWORD unk1, DWORD unk2, DWORD target_mask, DWORD unk3), DWORD);
+	FF8_FUNCTION(0x48E830, Sub48E830, (DWORD));
+	FF8_FUNCTION(0x48EF50, Sub48EF50, (WORD, DWORD*));
 	FF8_FUNC_RET(0x48F020, Rand, (), BYTE);
 	FF8_FUNC_RET(0x48F120, Rand1toX, (BYTE max), BYTE);
 	FF8_FUNC_RET(0x491820, CureStatus, (int target_id, int spell_power, int status_word, int status_dword), DWORD);
@@ -166,6 +189,8 @@ struct FF8Funcs {
 	FF8_FUNC_RET(0x495050, GetNonJGFAttackName, (int id), BYTE*);
 	FF8_FUNC_RET(0x495070, GetGFAttackName, (int id), BYTE*);
 	FF8_FUNC_RET(0x4950A0, GetEnemyAttackName, (int id), BYTE*);
+	FF8_FUNC_RET(0x495210, Sub495210, (BYTE*, BYTE, BYTE*), BYTE*);
+	FF8_FUNC_RET(0x495280, Sub495280, (BYTE*), BYTE*);
 	FF8_FUNC_RET(0x496310, GetCharacterHP, (int lvl, int char_id), DWORD);
 	FF8_FUNC_RET(0x496440, GetCharacterStat, (int lvl, int char_id, int stat), DWORD);
 	FF8_FUNC_RET(0x4967C0, GetCharacterHit, (int char_id), DWORD);
