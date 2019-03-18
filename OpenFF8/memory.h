@@ -17,6 +17,7 @@
 
 #pragma pack(push, 1)
 struct FF8Vars {
+	FF8_VAR(0x0B87798, DWORD, unkdword0B87798);
 	FF8_VAR(0x1CE476A, short, unkword1CE476A);
 	FF8_VAR(0x1CE48A0, DWORD, keyspressed2);
 	FF8_VAR(0x1CE48A8, DWORD, enabledkeys2);
@@ -45,6 +46,7 @@ struct FF8Vars {
 	FF8_VAR(0x1D28814, BYTE, unkbyte1D28814); //used in func 0x48BA10, array of 8?
 	FF8_VAR(0x1D28854, BYTE, unkbyte1D28854); //used in func 0x48BA10, array of 8?
 	FF8_VAR(0x1D2885C, BYTE, unkbyte1D2885C); //used in func 0x48BA10, array of 8?
+	//0x1D28864 - 3 * struct of size 44 bytes
 	FF8_VAR(0x1D28D98, DWORD*, battle_vars); //- 60 to 67 - base address used is 0x1D28C18 - array of size 8
 	FF8_VAR(0x1D28DCD, BYTE, unkbyte1D28DCD);
 	FF8_VAR(0x1D28DDC, BYTE*, current_battle_message);
@@ -75,7 +77,14 @@ struct FF8Vars {
 	FF8_VAR(0x1D2A23E, WORD, current_attack_status_word);
 	FF8_VAR(0x1D2A241, BYTE, current_attack_element_percent);
 	FF8_VAR(0x1D2A244, BYTE, current_attack_element);
+	FF8_VAR(0x1D2A284, void*, unkptr1D2A284);
+	FF8_VAR(0x1D2A288, void*, unkptr1D2A288);
 	FF8_VAR(0x1D2B813, BYTE, countdown_enabled);
+	FF8_VAR(0x1D2BB88, double, unkdouble1D2BB80);
+	FF8_VAR(0x1D2BB88, uint64_t, unkqword1D2BB88);
+	FF8_VAR(0x1D2BB90, uint64_t, unkqword1D2BB90);
+	FF8_VAR(0x1D2BB98, DWORD, unkdword1D2BB98);
+	FF8_VAR(0x1D2BB9C, DWORD, unkdword1D2BB9C);
 	FF8_VAR(0x1D76834, BYTE*, current_character_commands);
 	FF8_VAR(0x1D76838, BYTE*, current_character_limit_break);
 	FF8_VAR(0x1D76844, BYTE, current_active_character_id);
@@ -116,14 +125,36 @@ struct FF8Vars {
 	FF8_VAR(0x1D9D0E8, BYTE, entity_count_background);
 	FF8_VAR(0x1D9D0F0, FieldEntity*, entity_line);
 	FF8_VAR(0x1DCB340, DWORD*, unkptrarr1DCB340);
+	FF8_VAR(0x209AB50, DWORD, unkdword209AB50);
+	FF8_VAR(0x209AB54, DWORD, unkdword209AB54);
+	FF8_VAR(0x209AB58, DWORD, unkdword209AB58);
 	FF8_FUNC_PTR(0x21DFEC4, current_magic_init_function, (MagicIDInitData& init_data), TaskList*);
 	IDirect3D9** direct3d_9;// = (IDirect3D9**)0x6C2DC00;
 	IDirect3DDevice9** direct3d_device_9;// = (IDirect3DDevice9**)0x6C2DC04;
 };
 
 struct FF8Funcs {
+	FF8_FUNCTION(0x409A57, FFSwitchModule, (FFModuleInterface*, void*));
+	FF8_FUNCTION(0x409B08, Sub409B08, (BufApp0xC10*));
+	FF8_FUNCTION(0x409B25, Sub409B25, (BufApp0xC10*));
+	FF8_FUNCTION(0x409B42, Sub409B42, (BufApp0xC10*));
+	FF8_FUNC_RET(0x40A04A, FFGetBufferAddress, (), void*);
+	FF8_FUNCTION(0x40AA12, FFGetTime, (uint64_t*));
 	FF8_FUNC_RET(0x40AC5B, WindowProc, (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam), LRESULT);
+	FF8_FUNCTION(0x416B9A, Sub416B9A, (void*));
+	FF8_FUNCTION(0x41DFBA, FFClearViewport, (DWORD, DWORD, DWORD, BufApp0xC10*));
+	FF8_FUNCTION(0x41E168, FFSetBGMaterial, (colorBGRA*, BufApp0xC10*));
+	FF8_FUNCTION(0x41E947, Sub41E947, (DWORD, BufApp0xC10*));
+	FF8_FUNC_RET(0x41E972, FFBeginAndDrawScene, (DWORD, BufApp0xC10*), DWORD);
+	FF8_FUNCTION(0x41E99D, Sub41E99D, (BufApp0xC10*));
+	FF8_FUNCTION(0x424BF9, Sub424BF9, (void*));
+	FF8_FUNCTION(0x43FBE8, Sub43FBE8, (BufApp0xC10*));
+	FF8_FUNC_RET(0x45B2E0, IsWindowActive, (), bool);
+	FF8_FUNCTION(0x45B450, Sub45B450, ());
+	FF8_FUNCTION(0x45B580, Sub45B580, ());
+	FF8_FUNCTION(0x4647A0, Sub4647A0, ());
 	FF8_FUNC_RET(0x46B440, InitializeSound_CAL, (), DWORD);
+	FF8_FUNCTION(0x4701B0, UpdateTimers, ());
 	FF8_FUNCTION(0x477890, Sub477890, (FieldEntity*));
 	FF8_FUNCTION(0x47D930, Sub47D930, (DWORD, DWORD));
 	FF8_FUNCTION(0x47E080, Sub47E080, (DWORD));
@@ -195,6 +226,12 @@ struct FF8Funcs {
 	FF8_FUNC_RET(0x496440, GetCharacterStat, (int lvl, int char_id, int stat), DWORD);
 	FF8_FUNC_RET(0x4967C0, GetCharacterHit, (int char_id), DWORD);
 	FF8_FUNC_RET(0x4968A0, GetCharacterEva, (int char_id, int unk1), DWORD);
+	FF8_FUNC_RET(0x497380, Sub497380, (DWORD menuId, DWORD subMenuId, DWORD, DWORD), DWORD);
+	FF8_FUNCTION(0x4980C0, Sub4980C0, ());
+	FF8_FUNCTION(0x499A40, Sub499A40, ());
+	FF8_FUNCTION(0x499EA0, Sub499EA0, ());
+	FF8_FUNCTION(0x49B120, Sub49B120, ());
+	FF8_FUNCTION(0x4A22C0, FFMenuModule, (BufApp0xC10*));
 	FF8_FUNCTION(0x4AD170, Sub4AD170, (DWORD unk1));
 	FF8_FUNCTION(0x505C00, Sub505C00, (UnkStruct1D99A40& unk1, BYTE attack_type));
 	FF8_FUNC_RET(0x505F00, CameraRelated, (MagicData& magic_data, WORD unk2), BYTE);
@@ -217,6 +254,8 @@ struct FF8Funcs {
 	FF8_FUNCTION(0x52C650, InitFieldEntities, ());
 	FF8_FUNC_RET(0x52D150, GetDrawPointStatus, (int id), DWORD);
 	FF8_FUNC_RET(0x52D1E0, GetDrawPointMagic, (int id), DWORD);
+	FF8_FUNCTION(0x56BA50, Sub56BA50, (DWORD, BufApp0xC10*));
+	FF8_FUNCTION(0x56D9C0, Sub56D9C0, ());
 	FF8_FUNCTION(0x56DCE0, Sub56DCE0, (BYTE unk1, WORD unk2));
 	FF8_FUNC_RET(0x6298A0, Mag002_Fire_Init, (MagicIDInitData* init_data), TaskList*);
 	FF8_FUNC_RET(0x629990, Mag002_Fire_B, (LinkTask& task_data), DWORD);

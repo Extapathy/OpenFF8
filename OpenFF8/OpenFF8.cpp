@@ -8,6 +8,7 @@
 #include "battle.h"
 #include <unordered_map>
 #include "myIDirect3DDevice9.h"
+#include "menu.h"
 
 #define SIZE 6
 #define VERSION 0
@@ -44,7 +45,7 @@ void PatchFunctions() {
 	//REDIRECT(address, DrawPrimitives);
 	//REDIRECT(WindowProc);
 
-
+	REDIRECT(FFMenuModule);
 	REDIRECT(BdLinkTask);
 	REDIRECT(GetFreeLinkTask);
 	REDIRECT(DoLinkTask);
@@ -54,7 +55,7 @@ void PatchFunctions() {
 void UnpatchFunctions() {
 	//ENDREDIRECT(WindowProc);
 
-
+	ENDREDIRECT(FFMenuModule);
 	ENDREDIRECT(BdLinkTask);
 	ENDREDIRECT(GetFreeLinkTask);
 	ENDREDIRECT(DoLinkTask);

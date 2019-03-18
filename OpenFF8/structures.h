@@ -316,12 +316,27 @@ struct MagicData2 {
 };
 
 struct CharacterData {
-	BYTE padding[30];
-	BYTE command_data[16];
-	BYTE limit_data[4];
-	BYTE padding2[80];
-	MagicData2 magic[32];
-	BYTE padding1[174];
+	BYTE padding[30]; //0x000
+	BYTE command_data[16]; //0x01E
+	BYTE limit_data[4]; //0x02E
+	BYTE padding2[80]; //0x032
+	MagicData2 magic[32]; //0x082
+	BYTE padding1[80]; //0x122
+	WORD currentHp; //0x172
+	WORD maxHp; //0x174
+	BYTE padding176[66]; //0x176
+	BYTE lvl; //0x1B8
+	BYTE unk1B9[2]; //0x1B9
+	BYTE str; //0x1BB
+	BYTE vit; //0x1BC
+	BYTE mag; //0x1BD
+	BYTE spr; //0x1BE
+	BYTE spd; //0x1BF
+	BYTE luck; //0x1C0
+	BYTE eva; //0x1C1
+	BYTE hit; //0x1C2
+	BYTE unkbyte1C3; //0x1C3
+	BYTE padding1[12]; //0x1C4
 };
 
 static_assert(sizeof(CharacterData) == 464, "CharacterData is wrong size.");
@@ -521,3 +536,70 @@ struct SaveGame {
 };
 
 static_assert(sizeof(SaveGame) == 5024, "SaveGame is wrong size.");
+
+struct BattleAnim {
+	BYTE unkbyte00;
+	BYTE unkbyte01;
+	WORD unkword02;
+	BYTE unkbyte06;
+	BYTE unkbyte07;
+};
+
+struct BattleAnimReader {
+	BYTE* animptr;
+	DWORD currentBit;
+};
+
+struct UnkBattleAnimRelated {
+	VOID* unkptr04;
+};
+
+struct colorBGRA
+{
+	float B;
+	float G;
+	float R;
+	float A;
+};
+
+struct FFModuleInterface
+{
+	uint32_t initSystems;
+	uint32_t exitSystems;
+	uint32_t field08;
+	uint32_t field0C;
+	uint32_t mainLoop;
+	uint32_t mouseInputHandler;
+	uint32_t keyboardInputHandler;
+};
+
+struct FFScene
+{
+	uint32_t isEnabled;                 // 0x0
+	uint32_t field4;
+	uint32_t field8;
+	uint32_t fieldC;
+	uint32_t field10;
+	uint32_t nNumMeshes;                // 0x14
+	uint32_t fieldRest[28];
+};
+
+struct BufApp0xC10
+{
+	uint32_t field000;
+	uint32_t screenWidth;
+	uint32_t screenHeight;
+	uint32_t field00C; // colour depth?
+	uint32_t fieldRest0[202];
+	void* pFFScene0;                 // 0x338
+	void* pFFScene1;                 // 0x33C
+	uint32_t fieldRest1[367];
+	void*    pBackBufferSurfaceDesc;    // 0x8FC
+	uint32_t fieldRest2[89];
+	uint32_t isRequestedModuleChange;   // 0xA64
+	uint32_t nCurrentSceneIndex;        // 0xA68
+	uint32_t fieldRest3[49];
+	FFModuleInterface currentModule;    // 0xB30
+	FFModuleInterface nextModule;       // 0xB4C
+	uint32_t fieldRest4[42];            // 0xB68
+};
